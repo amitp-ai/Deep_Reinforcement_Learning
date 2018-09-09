@@ -25,6 +25,7 @@ Fixed Q Target: In the above q-learning algorithm using a function approximator,
 The second modification is experience replay. Updating the weights as new states are being visited is fraught with problems. One is that we don't make use of past experiences. An experience is only used once and then discared. An even worse problem is that there is inherent correlation in the states being visited that needs to be broken; otherwise, the agent will not learn well. Both of these issues are address using experience replay where we have a memory buffer where all the expriences tuples (i.e. state, action, reward, and next state) are stored. And at each learning step, we randomly sample experiences form this buffer to break correlation. This also helps us learn from the same experience multiple times. This is especially useful when encountering some rare experiences.
 
 Here is the agent's score as it was trained using the DQN algorithm:
+
 ![DQN Training][Image_DQN]
 
 At the end of 2000 episodes, the 100 episode average score was 15, but the agent's behaviour was not smooth.
@@ -34,6 +35,7 @@ I then tried using the double DQN training algorith. DQN is based upon Q-learnin
 Double DQN is the implementation of double q-learning using a deep neural network as the function approximator where we use the target network to find the action with the highest q-value, and use the q-value of that action using the local network.
 
 Here is the agent's score as it was trained using the double DQN algorithm:
+
 ![DDQN Training][Image_DDQN]
 
 At the end of 2000 episodes, the 100 episode average score was 16.5 and the agent's behavior is alot smoother than with DQN.
