@@ -1,7 +1,7 @@
 [//]: # (Image References)
 
-[dqn](https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png) "DQN Training"
-[ddqn](https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png) "DDQN Training"
+[dqn]: https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png "DQN Training"
+[ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
 
 
 # Project 1: Navigation
