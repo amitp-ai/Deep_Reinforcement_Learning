@@ -1,7 +1,8 @@
 [//]: # (Image References)
 
-[Image_DQN]: https://github.com/gtg162y/DRLND/blob/master/P1_Navigation/DQN.png "DQN Training"
-[Image_DDQN]: https://github.com/gtg162y/DRLND/blob/master/P1_Navigation/DDQN.png "DDQN Training"
+![dqn](https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png) "DQN Training"
+![ddqn](https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png) "DDQN Training"
+
 
 # Project 1: Navigation
 The objective of this project was to train an agent to pick the maximum number of good bananas while avoiding picking bad bananas. The agent is run in a simulated environment built uing Unity ML.
@@ -26,7 +27,7 @@ The second modification is experience replay. Updating the weights as new states
 
 Here is the agent's score as it was trained using the DQN algorithm:
 
-![DQN Training][Image_DQN]
+![dqn][Image_DQN]
 
 At the end of 2000 episodes, the 100 episode average score was 15, but the agent's behaviour was not smooth.
 
@@ -36,7 +37,7 @@ Double DQN is the implementation of double q-learning using a deep neural networ
 
 Here is the agent's score as it was trained using the double DQN algorithm:
 
-![DDQN Training][Image_DDQN]
+![ddqn][Image_DDQN]
 
 At the end of 2000 episodes, the 100 episode average score was 16.5 and the agent's behavior is alot smoother than with DQN.
 
