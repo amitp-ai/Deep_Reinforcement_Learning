@@ -13,8 +13,8 @@ Using a simplified version of the Unity Banana environment, the objective of the
 
 Before diving into the technical details, let us briefly cover the basics of Reinforcement learning.
 
-### Fundamentals of Reinforcement Learning
 ******************************************
+### Fundamentals of Reinforcement Learning
 In broad terms, machine learning can be divided into three categories: supervised learning, unsupervised learning, and reinforcement learning. Supervised learning is when we train a model directly from the ground truth and the model gets immediate feedback as to whether its prediction is correct or not. Unsupervised learning is training the model without having any knowledge of what is the correct answer i.e. there is no supervisor to learn form. Reinforcement learning is training an agent to perform a particular behavior, but the feedback of whether the agent's behavior is correct or not is received after many time steps -- i.e. there is a delayed feedback (unlike in supervised learning where there is an immediate feedback). It is basically a method of sequential decision making where the model of the environment is unknown and the agent has to learn the optimal behavior (to get maximum rewards) in that environment. If the environment's model is known, then it is known as a planning problem. There are many different planning algorithms such as Dynamic Programming, Uniform Cost Search, A* etc. Strictly speaking, regardless of whether the environment's model is known or not, it is all under the domain of reinforcement learning. However, in common parlance, reinforcement learning is typically used for situations where the environment's model is not known.
 
 ### Markov Decision Process (MDP)
