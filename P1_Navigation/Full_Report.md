@@ -27,17 +27,17 @@ Once given an MDP, the goal of an agent (using RL algorithms) is to take the opt
 ### Monte-Carlo Learning
 Intuitively, Monte-Carlo (MC) learning works as follows: we start off with a random policy from a starting state s and taking action a and then follow the policy pi until termination (i.e. reaching the terminal state). The q-value of state s and action a is then updated using the following equation:
 
-qpi(s,a) = qpi(s,a) + alpha(Gt-qpi(s,a))... EQ. 1, where Gt is the total rewards obtained for the episode and alpha is the learning rate.
+qpi(s,a) = qpi(s,a) + alpha(Gt-qpi(s,a)) ... EQ. 1, where Gt is the total rewards obtained for the episode and alpha is the learning rate.
 
 This same process of updating the q-value is done for all the states encountered in the episode. Then the policy is updated such that for each state (that has been previously visited), we pick the action with the highest q-value. But given the q-values for the policy pi are not accurate as they're only an estimate, this will be a greedy policy that can be suboptimal. To address it, we use an epsilon-greedy policy where with a probability epsilon (eps), we randomly pick an action from state s and with probability 1-eps, we follow the greedy policy. This helps balance exploration-exploitation tradeoff that is so important in reinforcement learning. The process of iteratively updating the eps-greedy policy and the q-values of all the visited states eventually leads to q-value convergence to the optimal policy's q-values. One downside of the MC method is that it only works for episodic tasks (i.e. tasks that terminate). Moreover, it also takes longer time to learn than other algorithms.
 
 ### Temporal-Difference Learning
 Temporal-Difference (TD) learning is another type of Reinforcement learning algorithm that combines the best of Monte-Carlo (MC) learning and Dynamic programming (DP). Like DP, we bootstrap by updating the q-values after one step instead of waiting until the episode terminates. This allows for the algorithm to converge faster and be computationally efficient. Moreover, like MC, for each state, TD only takes/samples a single action. That is unlike DP, where we do full action sweep at each step. This further makes it computationally efficient. There are a couple different variants of the TD learning algorithm: sarsa, Q-learning, and expected sarasa. And they all differ in how the TD target in their update equations are calculated. The q-value update equation for sarsa is given by:
 
-qpi(s,a) = qpi(s,a) + alpha(qpi(s',a') - qpi(s,a))... EQ. 2, where a' is the action taken according to policy pi from state s' and the other parameters are as defined previously.
+qpi(s,a) = qpi(s,a) + alpha(qpi(s',a') - qpi(s,a)) ... EQ. 2, where a' is the action taken according to policy pi from state s' and the other parameters are as defined previously.
 
 And the update equation for q-learning is:
-qpi(s,a) = qpi(s,a) + alpha(maxa{qpi(s',a)} - qpi(s,a))... EQ. 3
+qpi(s,a) = qpi(s,a) + alpha(maxa{qpi(s',a)} - qpi(s,a)) ... EQ. 3
 
 Once the q-values are updated, the policy is inturn updated in the same was as with MC method above, i.e. using eps-greedy policy.
 
@@ -45,7 +45,7 @@ sarsa is an online learning algorithm because for the TD target (i.e. qpi(s',a')
 
 The above equations, however only work for tabular world cases where the state space is finite. In continuous environments, discretizing the statespace can quickly run into the curse of dimensionality problem. To address it, we instead use a function approximator to model the q-values. Using a function approximator, we update the weights of the function approximator and so the update equation for q-learning becomes:
 
-w = qpi(s,a,w) + alpha(maxa{qpi(s',a,w)} - qpi(s,a,w))*grad_w(qpi(s,a,w)) (EQ. 4), where grad_w(qpi(s,a,w)) is the gradient of qpi(s,a,w) with respect to weights w.
+w = qpi(s,a,w) + alpha(maxa{qpi(s',a,w)} - qpi(s,a,w))*grad_w(qpi(s,a,w)) ... EQ. 4, where grad_w(qpi(s,a,w)) is the gradient of qpi(s,a,w) with respect to weights w.
 
 And the policy update is same as in the tabular case where for each visited state, with probability eps we select a random action and with probability 1-eps we select an action with the maximum q-value (i.e. greedy policy). For linear function approximators, this approach works rather well in practice. That is the learning algorithm doesn't oscillate and instead converges to the optimal policy. However, for nonlinear function approximators like neural networks, the above approach can run into instabilities. To help improve convergence, two modifications can be made and the resulting algorithm is known as Deep Q-Network (DQN)[2].
 
