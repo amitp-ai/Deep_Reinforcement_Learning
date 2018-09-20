@@ -68,13 +68,17 @@ Just to refresh, the vector observation space is in a 37-dimensional continuous 
 - **`2`** - turn left.
 - **`3`** - turn right.
 
-The observation space is essentially fully observable because it includes information regarding the type of obstacle, the distance to obstable, and the agent's velocity. As a result, we don't need to augment the observations to make it fully observable. Instead, we can directly use the incoming observations as our state representation. The function approximator used is a 3 layer fully connected neural network with the input layer dimension being 37, the first hidden layer being 64 dimensional, the second hidden layer also being 64 dimensional, and the final output layer being 4 dimensional -- for each of the 4 different actions. The model is trained using Stochastic-Gradient Descent algorithm (specifically the Adam optimizer) to update the weights using Equation 4 above. See the github code for implementation details. After training the agent for 1000 episodes, the average reward over 100 episodes is achieved to be around 13. Double DQN helped improve the 100 episode reward to around 17. Below is a video of the agent's performance using the double DQN algorithm.
+The observation space is essentially fully observable because it includes information regarding the type of obstacle, the distance to obstable, and the agent's velocity. As a result, we don't need to augment the observations to make it fully observable. Instead, we can directly use the incoming observations as our state representation. The function approximator used is a 3 layer fully connected neural network with the input layer dimension being 37, the first hidden layer being 64 dimensional, the second hidden layer also being 64 dimensional, and the final output layer being 4 dimensional -- for each of the 4 different actions. The model is trained using Stochastic-Gradient Descent algorithm (specifically the Adam optimizer) to update the weights using Equation 4 above. See the GitHub code for implementation details. 
+
+I first tried training the agent using the DQN algorithm, and after training the agent for 1000 episodes, the average reward over 100 episodes is achieved to be around 13 as shown below.
 
 ![DQN Training][dqn]
 
+To further improve the model performance, I retrained the agent using the double DQN algorithm. After training for 1000 episodes, the 100 episode reward increased to around 17.
+ 
 ![DDQN Training][ddqn]
 
-At the end of 2000 episodes, the 100 episode average score was 16.5 and the agent's behavior is alot smoother than with DQN.
+Compared to DQN, the double DQN algortihm resulted in higher rewards and smoother behaviour. Below is a video of the agent's performance using the double DQN algorithm.
 
 
 ### Challenge: Train Using Raw Input Pixels
