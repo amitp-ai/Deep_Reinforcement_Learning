@@ -9,6 +9,7 @@
 # Project 1: Navigation (Banana Collection Agent)
 
 ![Pixel DQN Test Video][dqn pixel video]
+
      Agent Performance Using Raw Pixels!
 
 ### Introduction
