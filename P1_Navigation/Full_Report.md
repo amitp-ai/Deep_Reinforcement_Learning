@@ -4,7 +4,7 @@
 [dqn]: https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png "DQN Training"
 [ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
 [pixel dqn]: https://user-images.githubusercontent.com/23042512/45857880-aed2a680-bd0f-11e8-9fa5-c6f886449e04.png "Pixel DQN Training"
-
+[ddqn video]: https://user-images.githubusercontent.com/23042512/45858185-ff96cf00-bd10-11e8-9b25-a16d5153d56b.gif "DDQN Test Video"
 # Project 1: Navigation
 
 ### Introduction
@@ -80,6 +80,8 @@ I first tried training the agent using the DQN algorithm, and after training the
 ![DDQN Training][ddqn]
 
 Compared to DQN, the double DQN algortihm resulted in higher rewards and smoother behaviour. Below is a video of the agent's performance using the double DQN algorithm.
+
+![DDQN Test Video][ddqn video]
 
 
 ### Challenge: Training Using Raw Input Pixels
