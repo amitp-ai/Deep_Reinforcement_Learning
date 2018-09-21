@@ -1,13 +1,15 @@
 [//]: # (Image References)
 
-[image1]: https://user-images.githubusercontent.com/10624937/42135619-d90f2f28-7d12-11e8-8823-82b970a54d7e.gif "Trained Agent"
 [dqn]: https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png "DQN Training"
 [ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
 [pixel dqn]: https://user-images.githubusercontent.com/23042512/45857880-aed2a680-bd0f-11e8-9fa5-c6f886449e04.png "Pixel DQN Training"
 [ddqn video]: https://user-images.githubusercontent.com/23042512/45858185-ff96cf00-bd10-11e8-9b25-a16d5153d56b.gif "DDQN Test Video"
 [dqn pixel video]: https://user-images.githubusercontent.com/23042512/45858306-a54a3e00-bd11-11e8-9c45-8d49ff23450f.gif "DQN Pixel Test Video"
 
-# Project 1: Navigation
+# Project 1: Navigation (Banana Collection Agent)
+
+![Pixel DQN Test Video][dqn pixel video]
+Agent Performance Using Raw Pixels!
 
 ### Introduction
 Reinforcement learning has long be thought to be an important tool in achieving human level Artificial Intelligence (AI). While we are still far away from anything remotely like human level AI, the advent of deep learning has significantly improved the performance of traditional reinforcement learning algorithms. In this article, we will look at my implementation for the banana collection project in the Udacity Deep Reinforcement Learning Nanodegree program. 
