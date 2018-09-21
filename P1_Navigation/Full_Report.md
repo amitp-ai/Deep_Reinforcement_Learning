@@ -57,7 +57,7 @@ And the policy update is same as in the tabular case where for each visited stat
 ### Double DQN
 DQN is based upon Q-learning algorithm with a deep neural network as the function approximator. However, one issue that Q-learning suffers from is the over estimation of the TD target due to the term max_a{qpi(s',a)}. The expected value of max_a{qpi(s',a)} is always greater than or equal to the max_a of the expected value of qpi(s',a). As a result, Q-learning ends up overstimating the q-values thereby degrading learning efficiency. To address it, we use the double Q-learning algoritm [1] where there are two separate q-tables. And at each time step, we randomly decide which q-table to use and use the argmax a from one q-table to evaluate the q-value of the other q-table. Refer to [1] for more details.
 
-Double DQN [3] is the implementation of double Q-learning using a deep neural network as the function approximator. Note that it is not a direct implementation of double Q-learning using a deep neural network, it is slightly different in terms of how the two networks are used. Refer to [3] and **model.py** for implementation details.
+Double DQN [3] is the implementation of double Q-learning using a deep neural network as the function approximator. Note that it is not a direct implementation of double Q-learning using a deep neural network, it is slightly different in terms of how the two networks are used. Refer to [3] and **`model.py`** for implementation details.
 **************************
 
 Having discussed some of the fundamentals, we are now in a position to dive into my implementation of this project.
