@@ -9,7 +9,7 @@
 # Project 1: Navigation (Banana Collection Agent)
 
 ![Pixel DQN Test Video][dqn pixel video]
-*`Agent Performance Using Raw Pixels!`*
+                  *Agent Performance Using Raw Pixels!*
 
 ### Introduction
 Reinforcement learning has long be thought to be an important tool in achieving human level Artificial Intelligence (AI). While we are still far away from anything remotely like human level AI, the advent of deep learning has significantly improved the performance of traditional reinforcement learning algorithms. In this article, we will look at my implementation for the banana collection project in the Udacity Deep Reinforcement Learning Nanodegree program. 
