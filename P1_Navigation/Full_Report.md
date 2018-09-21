@@ -3,7 +3,7 @@
 [image1]: https://user-images.githubusercontent.com/10624937/42135619-d90f2f28-7d12-11e8-8823-82b970a54d7e.gif "Trained Agent"
 [dqn]: https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png "DQN Training"
 [ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
-
+[pixel_dqn]: https://user-images.githubusercontent.com/23042512/45857616-81392d80-bd0e-11e8-99cf-de61303cf12a.png "Pixel DQN Training"
 # Project 1: Navigation
 
 ### Introduction
@@ -86,7 +86,11 @@ As a challenge, Udacity encouraged us to train the agent directly using raw pixe
 
 This assumption makes intuitive sense because without using a recurrent network as the input of the overall network, a single frame of pixel cannot (as an example) represent the agent's velocity information. Velocity is the first derivative of distance, and thus we need atleast two adjacent frames (and the corresponding action taken) to represent it. To get acceleration information (which is the second derivative of distance), we need 3 frames, and so on and so forth for higher order derivatives. This helps motivate why we need to augment the input state. While the underlying problem is a POMDP, to approximately turn it into an MDP, I augmented the input observations as follows: From the experience buffer (which is basically a sequential collection of all the raw pixels, actions, next state raw pixels, and rewards) an augmented state is created as follows: augmented_state = [pix_t-1, a_t-1, pix_t, a_t, pix_t+1], where pix_t-1, pix_t, and pix_t+1 are the raw input images from 1 time step earlier, the current time step, and the next time step's observation, respectively. Moreover, a_t-1 and a_t are the actions taken at the prvious time step and the current time step, respectively. This augmented state is what is fed as the input to the CNN, and the network is then trained end-to-end.
 
-This agent was trained using the DQN architecture and the agent was trained for 3000 episodes. The final trained agent achieves an average reward of about 11 over a course of 100 episodes. The video below shows the performance of this agent when only observing raw input pixels. Refer to model_pixels.py for implementation details.
+This agent was trained using the DQN architecture and the agent was trained for 3000 episodes. Below is the agent performance as it is trained:
+
+![Pixel DQN Training][pixel dqn]
+
+The final trained agent achieves an average reward of about 11 over a course of 100 episodes. The video below shows the performance of this agent when only observing raw input pixels. Refer to model_pixels.py for implementation details.
 
 As an aside, in theory we can solve this partial observability issue using the Math heavy POMDP framework, but it is computationally intractable for such a high dimensional observation space. Another option is to convert the POMDP problem into an MDP by using the entire history of all observations and actions as our state representation. However, this is also computationally intractable, not to mention the huge amount of memory needed. Given we have some decent idea as to what needs to be included in the state space, e.g. agent's velocity, acceleration, type of obstacles, distance to obstaces etc, and given we have a powerful function approximator, we can get most of the environment's state information using the current, the previous, and the next image frames and their corresponding actions. Hence the above state augmentation methodology was used.
 
