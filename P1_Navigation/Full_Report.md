@@ -51,7 +51,7 @@ where grad_w(qpi(s,a,w)) is the gradient of qpi(s,a,w) with respect to weights w
 And the policy update is same as in the tabular case where for each visited state, with probability eps we select a random action and with probability 1-eps we select an action with the maximum q-value (i.e. greedy policy). For linear function approximators, this approach works rather well in practice. That is the learning algorithm doesn't oscillate and instead converges to the optimal policy. 
 
 ### DQN
-However, for nonlinear function approximators like neural networks, the above approach can run into instabilities. To help improve convergence, two modifications can be made and the resulting algorithm is known as Deep Q-Network (DQN) [2].
+For nonlinear function approximators like neural networks, the above approach can run into instabilities. To help improve convergence, two modifications can be made and the resulting algorithm is known as Deep Q-Network (DQN) [2].
 
 1. Fixed Q Targets: In the above Q-learning algorithm using a function approximator, the TD target is also dependent on the network parameter w that we are trying to learn/update, and this can lead to instabilities. To address it, a separate network with identical architecture but different weights is used. And the weights of this separate target network are updated every 100 steps to be equal to the local network that is continuously being updated.
 
