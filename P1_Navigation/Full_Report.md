@@ -3,7 +3,7 @@
 [image1]: https://user-images.githubusercontent.com/10624937/42135619-d90f2f28-7d12-11e8-8823-82b970a54d7e.gif "Trained Agent"
 [dqn]: https://user-images.githubusercontent.com/23042512/45259824-d8441780-b38a-11e8-94f9-6391923aa2f7.png "DQN Training"
 [ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
-[pixel dqn]: https://user-images.githubusercontent.com/23042512/45857616-81392d80-bd0e-11e8-99cf-de61303cf12a.png "Pixel DQN Training"
+[pixel dqn]: https://user-images.githubusercontent.com/23042512/45857880-aed2a680-bd0f-11e8-9fa5-c6f886449e04.png "Pixel DQN Training"
 
 # Project 1: Navigation
 
