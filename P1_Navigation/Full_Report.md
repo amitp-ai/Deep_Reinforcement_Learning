@@ -5,6 +5,8 @@
 [ddqn]: https://user-images.githubusercontent.com/23042512/45259828-e5610680-b38a-11e8-9885-75135a438094.png "DDQN Training"
 [pixel dqn]: https://user-images.githubusercontent.com/23042512/45857880-aed2a680-bd0f-11e8-9fa5-c6f886449e04.png "Pixel DQN Training"
 [ddqn video]: https://user-images.githubusercontent.com/23042512/45858185-ff96cf00-bd10-11e8-9b25-a16d5153d56b.gif "DDQN Test Video"
+[dqn pixel video]: https://user-images.githubusercontent.com/23042512/45858306-a54a3e00-bd11-11e8-9c45-8d49ff23450f.gif "DQN Pixel Test Video"
+
 # Project 1: Navigation
 
 ### Introduction
@@ -94,6 +96,8 @@ This agent was trained using the DQN architecture and the agent was trained for 
 ![Pixel DQN Training][pixel dqn]
 
 The final trained agent achieves an average reward of about 11 over a course of 100 episodes. The video below shows the performance of this agent when only observing raw input pixels. Refer to model_pixels.py for implementation details.
+
+![Pixel DQN Test Video][dqn pixel video]
 
 As an aside, in theory we can solve this partial observability issue using the Math heavy POMDP framework, but it is computationally intractable for such a high dimensional observation space. Another option is to convert the POMDP problem into an MDP by using the entire history of all observations and actions as our state representation. However, this is also computationally intractable, not to mention the huge amount of memory needed. Given we have some decent idea as to what needs to be included in the state space, e.g. agent's velocity, acceleration, type of obstacles, distance to obstaces etc, and given we have a powerful function approximator, we can get most of the environment's state information using the current, the previous, and the next image frames and their corresponding actions. Hence the above state augmentation methodology was used.
 
