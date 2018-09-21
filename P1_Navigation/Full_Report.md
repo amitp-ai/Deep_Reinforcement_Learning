@@ -10,8 +10,6 @@
 # Project 1: Navigation
 
 ### Introduction
-![Trained Agent][image1]
-
 Reinforcement learning has long be thought to be an important tool in achieving human level Artificial Intelligence (AI). While we are still far away from anything remotely like human level AI, the advent of deep learning has significantly improved the performance of traditional reinforcement learning algorithms. In this article, we will look at my implementation for the banana collection project in the Udacity Deep Reinforcement Learning Nanodegree program. 
 
 Using a simplified version of the Unity Banana environment, the objective of the project is to design an agent to navigate (and collect bananas!) in a large, square world. A reward of +1 is provided for collecting a yellow banana, and a reward of -1 is provided for collecting a blue banana.  Thus, the goal of the agent is to collect as many yellow bananas as possible while avoiding blue bananas. The agent's observation space is 37 dimensional and the agent's action space is 4 dimensional (forward, backward, turn left, and turn right). The task is episodic, and in order to solve the environment, the agent must get an average score of +13 over 100 consecutive episodes. As a Udacity challenge, and as detailed below, I also trained the agent using just the raw input image pixels as the observations -- although this invoved a very different network and a lot more time commitment!
