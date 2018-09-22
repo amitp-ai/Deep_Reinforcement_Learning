@@ -103,7 +103,7 @@ The final trained agent achieves an average reward of about 11 over a course of 
 As an aside, in theory we can solve this partial observability issue using the Math heavy POMDP framework, but it is computationally intractable for such a high dimensional observation space. Another option is to convert the POMDP problem into an MDP by using the entire history of all observations and actions as our state representation. However, this is also computationally intractable, not to mention the huge amount of memory needed. Given we have some decent idea as to what needs to be included in the state space, e.g. agent's velocity, acceleration, type of obstacles, distance to obstaces etc, and given we have a powerful function approximator, we can get most of the environment's state information using the current, the previous, and the next image frames and their corresponding actions. Hence the above state augmentation methodology was used. Refer to **`./visual_pixels/pixel_dqn_agent.py`** for implementation details.
 
 
-### References:
+# References:
 [1] Sutton and Barto RL Book: http://incompleteideas.net/book/the-book.html  
 [2] Deep Mind DQN paper: https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf  
 [3] Deep Mind Double DQN paper: https://arxiv.org/pdf/1509.06461.pdf
