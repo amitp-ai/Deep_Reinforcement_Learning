@@ -105,9 +105,7 @@ As an aside, in theory we can solve this partial observability issue using the M
 
 ### References:
 [1] Sutton and Barto RL Book: http://incompleteideas.net/book/the-book.html
-
 [2] Deep Mind DQN paper: https://storage.googleapis.com/deepmind-media/dqn/DQNNaturePaper.pdf
-
 [3] Deep Mind Double DQN paper: https://arxiv.org/pdf/1509.06461.pdf
 
 
