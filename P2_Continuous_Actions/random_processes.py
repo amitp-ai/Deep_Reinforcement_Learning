@@ -5,7 +5,7 @@ import copy
 import matplotlib.pyplot as plt
 
 class RandomWalk(object):
-    """Ornstein-Uhlenbeck process."""
+    """Random Walk process."""
 
     def __init__(self, size, seed, mu=0., sigma=0.2):
         """Initialize parameters and noise process."""
