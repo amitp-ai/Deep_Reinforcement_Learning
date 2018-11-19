@@ -41,9 +41,7 @@ A basic policy gradient algorithm making use of the above gradient is known as t
 
 ***A Basic Reinforce Algorithm:***
 
-- Start with a random vector &theta;
-
-- Repeat the following until convergence:
+Start with a random vector &theta; and repeat the following until convergence:
 
   1. Use the policy P<sub>&theta;</sub>(a<sub>t</sub>|s<sub>t</sub>) to collect m trajectories {&tau;<sup>1</sup>, &tau;<sup>2</sup>, ..., &tau;<sup>m</sup>}, where each trajectory is as defined above.
   2. Use these trajectories to compute the Monte-Carlo estimate of the gradient as follows:
