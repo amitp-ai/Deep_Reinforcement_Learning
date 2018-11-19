@@ -85,7 +85,7 @@ As shown above, instead of using the Monte-Carlo estimate of the rewards to go a
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{\theta}U_{\theta}&space;\approx&space;\hat{g}&space;=&space;\frac{1}{m}&space;\sum_{i=1}^{m}&space;\left(&space;\sum_{t=0}^{T}&space;\left(&space;\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t}))&space;\,&space;\hat{Q}_{P_\theta}(s_t,&space;a_t)&space;\right)&space;\right)_i&space;\:&space;...&space;\,&space;Equation&space;\,&space;10" title="\nabla_{\theta}U_{\theta} \approx \hat{g} = \frac{1}{m} \sum_{i=1}^{m} \left( \sum_{t=0}^{T} \left( \nabla_{\theta}log(P_{\theta}(a_{t}|s_{t})) \, \hat{Q}_{P_\theta}(s_t, a_t) \right) \right)_i \: ... \, Equation \, 10" />
 
-If Qhat<sub>P<sub>&theta;</sub></sub>(s<sub>t</sub>, a<sub>t</sub>) is modelled using a neural network (parameterized by w), then we get:
+If Qhat<sub>P<sub>&theta;</sub></sub>(s<sub>t</sub>, a<sub>t</sub>) is modeled using a neural network (parameterized by w), then we get:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\hat{Q}_{P_{\theta}}(s_{t},&space;a_{t})&space;=&space;\hat{Q}_{P_{\theta}}(s_{t},&space;a_{t},&space;w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;11" title="\hat{Q}_{P_{\theta}}(s_{t}, a_{t}) = \hat{Q}_{P_{\theta}}(s_{t}, a_{t}, w) \: ... \, Equation \, 11" />
 
