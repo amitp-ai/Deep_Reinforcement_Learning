@@ -1,5 +1,5 @@
-[image1]: https://user-images.githubusercontent.com/23042512/48657451-cc597f00-e9e5-11e8-8332-bf97ee7da5f8.gif "Trained Agent"
-[image2]: https://user-images.githubusercontent.com/23042512/48657452-cc597f00-e9e5-11e8-8776-37a144f24702.png "Trained Agent"
+[image1]: https://user-images.githubusercontent.com/23042512/48657451-cc597f00-e9e5-11e8-8332-bf97ee7da5f8.gif "Trained Agent Perf"
+[image2]: https://user-images.githubusercontent.com/23042512/48657452-cc597f00-e9e5-11e8-8776-37a144f24702.png "Trained Agent Scores"
 
 ## Introduction
 ![Trained Agent][image1]
