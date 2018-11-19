@@ -29,7 +29,7 @@ Using the definition of expectation, the above equation 1a can be re-written as:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;U_{\theta}&space;=&space;\sum_{\tau}&space;\left&space;(P_{\theta}(\tau)&space;\left(\sum_{t=0}^{T}r(s_{t},a_{t})\right)&space;\right&space;)&space;...&space;\:&space;Equation&space;\:&space;2" title="U_{\theta} = \sum_{\tau} \left (P_{\theta}(\tau) \left(\sum_{t=0}^{T}r(s_{t},a_{t})\right) \right ) ... \: Equation \: 2" />
 
-Using Policy gradient method, we can maximize U<sub>&theta;</sub> by first computing its gradeint with respect to &theta;, which can readily be derived to be:
+Using Policy gradient method, we can maximize U<sub>&theta;</sub> by first computing its gradient with respect to &theta;, which can readily be derived to be:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{\theta}U_{\theta}&space;=&space;E_{\tau&space;\,&space;\sim&space;\,&space;P_{\theta}(\tau)}&space;\left[&space;\sum_{t=0}^{T}\left(\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t}))&space;\left(&space;\sum_{t=0}^{T}r(s_{t},a_{t})&space;\right)&space;\right)&space;\right]&space;\:&space;...&space;\,&space;Equation&space;\,&space;3" title="\nabla_{\theta}U_{\theta} = E_{\tau \, \sim \, P_{\theta}(\tau)} \left[ \sum_{t=0}^{T}\left(\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t})) \left( \sum_{t=0}^{T}r(s_{t},a_{t}) \right) \right) \right] \: ... \, Equation \, 3" />
 
