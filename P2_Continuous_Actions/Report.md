@@ -101,7 +101,7 @@ For any visited state-action pair (s,a), the actor network is updated using Equa
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;w&space;\leftarrow&space;w&space;-&space;\beta&space;\nabla_{w}L(w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;13" title="w \leftarrow w - \beta \nabla_{w}L(w) \: ... \, Equation \, 13" />
 
-Whereby the weight vector w is updated to redue the loss L(w), which is defined as:
+Whereby the weight vector w is updated to reduce the loss L(w), which is defined as:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;L(w)&space;=&space;\frac{1}2{}(Q_{P_\theta}(s_t,a_t)&space;-&space;\hat{Q}_{P_\theta}(s_t,a_t,w))^2&space;\:&space;...&space;\,&space;Equation&space;\,&space;14" title="L(w) = \frac{1}2{}(Q_{P_\theta}(s_t,a_t) - \hat{Q}_{P_\theta}(s_t,a_t,w))^2 \: ... \, Equation \, 14" />
 
