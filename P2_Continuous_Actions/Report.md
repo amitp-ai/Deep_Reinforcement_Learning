@@ -5,7 +5,7 @@
 ![Trained Agent][image1]
 
 
-This report outlines my implementation for Udacity's Deep Reinforcement Learning Nanodegree's second project: on the Reacher environment. In this project, the goal is to train an acrobat arm that has two joints so that it tracks a balloon. As the balloon moves, the two joints at adjusted to track the balloon. So this is a classical robotics problem, and using model-free reinforcement learning, the agent will learn the optimal policy. In particular, the method used is the deep deterministic policy gradient method (DDPG).
+This report outlines my implementation for Udacity's Deep Reinforcement Learning Nanodegree's second project on the Reacher environment. In this project, the goal is to train an acrobat arm that has two joints so that it tracks a balloon. As the balloon moves, the two joints at adjusted to track the balloon. So this is a classical robotics problem, and using model-free reinforcement learning, the agent will learn the optimal policy. In particular, the method used is the deep deterministic policy gradient method (DDPG).
 
 Value based reinforcement learning algorithms such as DQN have shown great performance in many domains. However, they are still limited to discrete action space environments and for deterministic policies (as they are essentially based upon a deterministic greedy policies as epsilon only selects a uniform-random action). Moreover, with value based methods, we first compute the value-function for each state, and use that to determine the best policy. This is an indirect way of finding the optimal policy.
 
