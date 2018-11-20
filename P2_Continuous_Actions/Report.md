@@ -95,7 +95,7 @@ Then Equation 10 can be re-written as:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{\theta}U_{\theta}&space;\approx&space;\hat{g}&space;=&space;\frac{1}{m}&space;\sum_{i=1}^{m}&space;\left(&space;\sum_{t=0}^{T}&space;\left(&space;\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t}))&space;\,&space;\hat{Q}_{P_\theta}(s_t,&space;a_t,&space;w)&space;\right)&space;\right)_i&space;\:&space;...&space;\,&space;Equation&space;\,&space;12" title="\nabla_{\theta}U_{\theta} \approx \hat{g} = \frac{1}{m} \sum_{i=1}^{m} \left( \sum_{t=0}^{T} \left( \nabla_{\theta}log(P_{\theta}(a_{t}|s_{t})) \, \hat{Q}_{P_\theta}(s_t, a_t, w) \right) \right)_i \: ... \, Equation \, 12" />
 
-Whereby, P<sub>&theta;</sub>(a<sub>t</sub> | s<sub>t</sub>) is the actor network that is parameterized by &theta; and Qhat<sub>P<sub>&theta;</sub></sub>(s<sub>t</sub>, a<sub>t</sub>, w) is the critic network that is parameterized by w. This is essentially what is known as an actor-critic algorithm.
+Whereby, P<sub>&theta;</sub>(a<sub>t</sub> | s<sub>t</sub>) is the actor network that is parameterized by &theta; and Qhat<sub>P<sub>&theta;</sub></sub>(s<sub>t</sub>, a<sub>t</sub>, w) is the critic network that is parameterized by w. This is essentially what is known as the actor-critic algorithm.
 
 For any visited state-action pair (s,a), the actor network is updated using Equation 6 (utilizing &gcirc; from Equation 12), and the critic network is typically updated using Temporal-Difference learning (due to its lower variance than Monte-Carlo learning) using the following update equation:
 
