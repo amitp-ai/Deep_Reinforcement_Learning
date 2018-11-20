@@ -58,10 +58,10 @@ The intuition behind the reinforce algorithm is that if the total reward is posi
 
 While better than stochastic optimization methods, the Reinforce algorithm suffers from a few drawbacks:
   1. The gradient estimate is pretty noisy, especially for the case m=1, because a single trajectory maynot be representative of the policy.
-  2. There is no clear credit assignment. A trajectory may contain many good and bad actions, and whether those actions are reinforced depends only on the total reward achieved starting from the initial state.
+  2. There is no clear credit assignment. A trajectory may contain many good and bad actions, and whether those actions are reinforced or not depend only on the total reward achieved starting from the initial state.
   3. It is very sensitive to the absolute value of the rewards. For example, adding a fixed constant to all the rewards can drastically change the behavior of the algorithm. Such a trivial transformation should have no effect on the optimal policy.
 
-By the definition of the gradient, &nabla;<sub>&theta;</sub> points in the direction of maximum change in U<sub>&theta;</sub>. However, the drawbacks of Reinforce algorithm are due to the fact that the Monte-Carlo estimate of &nabla;<sub>&theta;</sub> (&gcirc;) has high variance. If we can reduce its variance, then our estimate of gradient &gcirc; will be closer to the true gradient &nabla;<sub>&theta;</sub>.
+By the definition of the gradient, &nabla;<sub>&theta;</sub> points in the direction of the maximum change in U<sub>&theta;</sub>. However, the drawbacks of Reinforce algorithm are due to the fact that the Monte-Carlo estimate of &nabla;<sub>&theta;</sub> (&gcirc;) has high variance. If we can reduce its variance, then our estimate of gradient &gcirc; will be closer to the true gradient &nabla;<sub>&theta;</sub>.
 
 While the Monte-Carlo estimate of the gradient &gcirc; is unbiased, it exhibits high variance. As discussed below, there are a few ways of reducing variance without introducing bias: 1) using causality and 2) using a baseline.
 
@@ -82,7 +82,7 @@ And so, if the trajectory &tau; is sampled from P<sub>&theta;</sub>(&tau;), then
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;Q_{P_{\theta}}(s_{t},&space;a_{t})&space;\approx&space;\hat{Q}_{P_{\theta}}(s_{t},&space;a_{t})&space;=&space;\sum_{t^{'}=t}^T&space;r(s_{t^{'}},&space;a_{t^{'}})&space;\:&space;...&space;\,&space;Equation&space;\,&space;9" title="Q_{P_{\theta}}(s_{t}, a_{t}) \approx \hat{Q}_{P_{\theta}}(s_{t}, a_{t}) = \sum_{t^{'}=t}^T r(s_{t^{'}}, a_{t^{'}}) \: ... \, Equation \, 9" />
 
-As shown above, instead of using the Monte-Carlo estimate of the rewards to go as in Equation 7, we can use the one-step TD estimate of the rewards to go (for lower variance) using the state-action function. As a result, Equation 7 can be re-written as:
+As shown above, instead of using the Monte-Carlo estimate of the rewards to go as in Equation 7, we can use the Q-value estimate of the rewards to go. As a result, Equation 7 can be re-written as:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{\theta}U_{\theta}&space;\approx&space;\hat{g}&space;=&space;\frac{1}{m}&space;\sum_{i=1}^{m}&space;\left(&space;\sum_{t=0}^{T}&space;\left(&space;\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t}))&space;\,&space;\hat{Q}_{P_\theta}(s_t,&space;a_t)&space;\right)&space;\right)_i&space;\:&space;...&space;\,&space;Equation&space;\,&space;10" title="\nabla_{\theta}U_{\theta} \approx \hat{g} = \frac{1}{m} \sum_{i=1}^{m} \left( \sum_{t=0}^{T} \left( \nabla_{\theta}log(P_{\theta}(a_{t}|s_{t})) \, \hat{Q}_{P_\theta}(s_t, a_t) \right) \right)_i \: ... \, Equation \, 10" />
 
@@ -118,7 +118,7 @@ whereby
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\delta_{TD&space;\;&space;Error}&space;=&space;r(s_t,a_t)&space;&plus;&space;\max_a\hat{Q}_{P_\theta}(s_{t&plus;1},a,w)&space;-&space;\hat{Q}_{P_\theta}(s_{t},a_{t},w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;17" title="\delta_{TD \; Error} = r(s_t,a_t) + \max_a\hat{Q}_{P_\theta}(s_{t+1},a,w) - \hat{Q}_{P_\theta}(s_{t},a_{t},w) \: ... \, Equation \, 17" />
 
-This is the basics of the actor-critic algorithm. While there are many variances of it, as we will see below, but this is the basic core of it.
+This is the basics of the actor-critic algorithm. While there are many variants of it, as we will see below, this is the basic core of it.
 
 ## Advantage Actor-Critic Algorithm
 
@@ -126,15 +126,15 @@ In addition to using the rewards to go (due to causality), another approach to m
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{\theta}U_{\theta}&space;\approx&space;\hat{g}&space;=&space;\frac{1}{m}&space;\sum_{i=1}^{m}&space;\left(&space;\sum_{t=0}^{T}&space;\left(&space;\nabla_{\theta}log(P_{\theta}(a_{t}|s_{t}))&space;\,&space;\left(&space;\hat{Q}_{P_\theta}(s_t,&space;a_t,&space;w)&space;-&space;b\right)&space;\right)&space;\right)_i&space;\:&space;...&space;\,&space;Equation&space;\,&space;18" title="\nabla_{\theta}U_{\theta} \approx \hat{g} = \frac{1}{m} \sum_{i=1}^{m} \left( \sum_{t=0}^{T} \left( \nabla_{\theta}log(P_{\theta}(a_{t}|s_{t})) \, \left( \hat{Q}_{P_\theta}(s_t, a_t, w) - b\right) \right) \right)_i \: ... \, Equation \, 18" />
 
-There are many choices for the baseline b, and in theory, the optimal value of b can also be computed. However, in the interest of simplicity and be intuitive, a commonly used baseline is the q-value averaged over all the actions, i.e. the state-value.
+There are many choices for the baseline b, and in theory, the optimal value of b can also be computed. However, in the interest of simplicity and to be intuitive, a commonly used baseline is the q-value averaged over all the actions, i.e. the state-value.
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;b&space;=&space;\hat{V}_{P_\theta}(s_t,&space;w)&space;=&space;E_{a_t&space;\sim&space;P_{\theta}(a_t|s_t)}&space;\left&space;[\hat{Q}_{P_\theta}(s_t,&space;a_t,&space;w)&space;\right&space;]&space;\:&space;...&space;\,&space;Equation&space;\,&space;19" title="b = \hat{V}_{P_\theta}(s_t, w) = E_{a_t \sim P_{\theta}(a_t|s_t)} \left [\hat{Q}_{P_\theta}(s_t, a_t, w) \right ] \: ... \, Equation \, 19" />
 
-The Advantage function is defined as follows:
+The Advantage function is then written as follows:
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\hat{A}_{P_\theta}(s_t,&space;a_t,w)&space;=&space;\hat{Q}_{P_\theta}(s_t,&space;a_t,&space;w)&space;-&space;\hat{V}_{P_\theta}(s_t,&space;w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;20" title="\hat{A}_{P_\theta}(s_t, a_t,w) = \hat{Q}_{P_\theta}(s_t, a_t, w) - \hat{V}_{P_\theta}(s_t, w) \: ... \, Equation \, 20" />
 
-The basic idea with using the advantage function is that actions with higher q-value than the average (i.e. state-value) are reinforced where as other actions are inhibited. This makes a lot more intuitive sense than the gradient equation used in the original Reinforce algorithm. And so it's not totally surprising that it Mathematically results in lower variance.
+The basic idea with using this advantage function is that actions with higher q-value than the average (i.e. state-value) are reinforced where as other actions are inhibited. This makes a lot more intuitive sense than the gradient equation used in the original Reinforce algorithm. And so it's not totally surprising that Mathematically it results in lower variance. Moreover, now the gradient is no longer dependent on the absolute value of the rewards.
 
 One problem with the above Equation is that, in practice, it is very difficult to compute the above expectation -- especially for continuous actions or high dimensional action space. Hence, the state-value function is modeled with a separate neural network that is parameterized by w<sub>v</sub> as follows:
 
@@ -180,15 +180,15 @@ whereby using one-step TD learning (i.e. TD(0)):
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{w_{v}}L(w_v)&space;=&space;-(r(s_t,&space;a_t)&space;&plus;&space;\hat{V}_{P_{\theta}}(s_{t^{'}},&space;w_v)&space;-&space;\hat{V}_{P_{\theta}}(s_t,&space;w_v))\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t,&space;w_v)&space;=&space;-\hat{A}_{P_{\theta}}(s_t,a_t,w_v)&space;\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t,&space;w_v)&space;\;&space;...&space;\,&space;Equation&space;\,&space;31" title="\nabla_{w_{v}}L(w_v) = -(r(s_t, a_t) + \hat{V}_{P_{\theta}}(s_{t^{'}}, w_v) - \hat{V}_{P_{\theta}}(s_t, w_v))\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t, w_v) = -\hat{A}_{P_{\theta}}(s_t,a_t,w_v) \nabla_{w_v}\hat{V}_{P_{\theta}}(s_t, w_v) \; ... \, Equation \, 31" />
 
-Using the gradient estimate from Equation 29, the weight update equation for the Advantage function, and the remaining steps from the Reinforce algorithm is essentially what is known as the Advantage Actor-Critic algorithm.
+Using the gradient estimate from Equation 29, the weight update from Equation 30, and the remaining steps from the basic Reinforce algorithm results in what is known as the Advantage Actor-Critic algorithm.
 
-To briefly summarize the above discussion, the main downside of the Reinforce algorithm is that the gradient estimate is based upon the Monte-Carlo estimate of the expected total reward from the initial state-action pair -- which while has low bias, it has high variance. By using causality and subtracting out a baseline from the Monte-Carlo estimate, we can reduce the variance. The variance is further reduce by using a TD estimate of the total reward to go instead of a Monte-Carlo estimate.
+To briefly summarize the above discussion, the main downside of the Reinforce algorithm is that the gradient estimate is based upon the Monte-Carlo estimate of the expected total reward from the initial state-action pair -- which while has low bias, it has high variance. By using causality and subtracting out a baseline from the Monte-Carlo estimate, we can reduce the variance. The variance is further reduced by using TD estimate of the total reward to go instead of Monte-Carlo estimate.
 
 ## Deterministic Policy Gradient (DPG) Algorithm
 
-For stochastic policies in continuous environments, the actor outputs the mean and variance of a Gaussian distribution. And an action is sampled from this Gaussian distribution. For deterministic actions, while this approach still works as the network will learn to have very low variance, it involves unnecessary complexity and computational burden that unnecessarily slows down the learning algorithm. To address these short comings, for deterministic actions, we can use what is known as the deterministic policy gradient.
+For stochastic policies in continuous environments, the actor outputs the mean and variance of a Gaussian distribution. And an action is sampled from this Gaussian distribution. For deterministic actions, while this approach still works as the network will learn to have very low variance, it involves complexity and computational burden that unnecessarily slows down the learning algorithm. To address these short comings, for deterministic actions, we can use what is known as the deterministic policy gradient.
 
-In stochastic case, the policy gradient integrates over both state and action spaces, whereas in the deterministic case it only integrates over the state space. As a result, computing the deterministic policy gradient can potentially require fewer samples. But in order to fully explore the state space, the basic idea is to choose actions according to a stochastic behavior policy and learn about a deterministic target policy (i.e. needs to be off-policy learning).
+In stochastic case, the policy gradient integrates over both state and action spaces, whereas in the deterministic case it only integrates over the state space. As a result, computing the deterministic policy gradient can potentially require fewer samples. But in order to fully explore the state space, the basic idea is to choose actions according to a stochastic behavior policy and learn about a deterministic target policy (i.e. needs to be an off-policy algorithm).
 
 DPG is essentially a deterministic version of Actor-Critic algorithm. For a basic DPG algorithm, we have two neural networks, one network (parameterized by &theta;) is estimating the optimal target policy and the second network (parameterized by w) is estimating the action-value function corresponding to the target policy. The below equations formalize this.
 
@@ -217,18 +217,18 @@ As mentioned above, because the target policy is deterministic, the actor may no
 
     <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\delta_t&space;=&space;r(s_t,a_t)&space;&plus;&space;\hat{Q}_{\theta}(s_{t&plus;1},&space;\mu_{\theta}(s_{t&plus;1}),w)&space;-&space;\hat{Q}_{\theta}(s_t,&space;a_t&space;\sim&space;b(s_t),w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;36" title="\delta_t = r(s_t,a_t) + \hat{Q}_{\theta}(s_{t+1}, \mu_{\theta}(s_{t+1}),w) - \hat{Q}_{\theta}(s_t, a_t \sim b(s_t),w) \: ... \, Equation \, 36" />
 
-    weight update:
+    and the weight update is:
 
     <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;w&space;\leftarrow&space;w&space;&plus;&space;\alpha_w\delta_t\nabla_w\hat{Q}_{\theta}(s_t,&space;a_t&space;\sim&space;b(s_t),w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;37" title="w \leftarrow w + \alpha_w\delta_t\nabla_w\hat{Q}_{\theta}(s_t, a_t \sim b(s_t),w) \: ... \, Equation \, 37" />
 
-Please note, in order to properly balance exploration-exploitation tradeoff, while the target policy &mu; is deterministic, the behavior policy is stochastic. So this is an off-policy version of the DPG algorithm. While stochastic off-policy actor-critic algorithms typically use importance sampling for both the actor and the critic, because the deterministic policy gradient removes expectation over the actions, and given the state transition dynamics are same for both the target and behavior policies as they operate in the same environment, the importance sampling ratio is just 1. So we can avoid having to use importance sampling in the actor, and with same reasoning, we avoid using importance sampling in the critic [2]. For those who are wondering, similar reasoning applies as to why we don't use importance sampling with Q-learning.
+To reiterate, in order to properly balance exploration-exploitation tradeoff, while the target policy &mu; is deterministic, the behavior policy is stochastic. So this is an off-policy version of the DPG algorithm. While stochastic off-policy actor-critic algorithms typically use importance sampling for both the actor and the critic, because the deterministic policy gradient removes expectation over the actions, and given the state transition dynamics are same for both the target and behavior policies as they operate in the same environment, the importance sampling ratio is just 1. So we can avoid having to use importance sampling in the actor, and with same reasoning, we avoid using importance sampling in the critic [2]. For those who are wondering, similar reasoning applies as to why we don't use importance sampling with Q-learning.
 
 ## Deep Deterministic Policy Gradient (DDPG) Algorithm
-DDPG is basically DPG with a few training changes learned from the DQN architecture.
+DDPG is basically DPG with a few training changes adopted from the DQN architecture.
 
 One challenge when using neural networks for reinforcement learning is that most optimization algorithms assume the samples are independently and identically distributed. Obviously this assumption doesn't hold true because the samples are generated by exploring sequentially in an environment. Because DDPG is an off policy algorithm, we can use the replay buffer (a finite sized cache) as in DQN to address this issue. At each timestep the actor and critic are updated by sampling a minibatch uniformly from the buffer [2].
 
-For the critic, since the network being updated is also used in calculating the target, this can potentially lead to training instabilities. One solution to address this is using a separate target network, as with DQN [2]. Given the target values are determined using both the critic and actor networks, we create a copy of both of these networks and soft update their weights to the respective learned networks. [Please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb)
+For the critic, since the network being updated is also used in calculating the target, this can potentially lead to training instabilities for highly nonlinear function approximators like neural networks. One solution to address this is using a separate target network, as with DQN [2]. Given the target values are determined using both the critic and actor networks, we create a copy of both of these networks and soft update their weights to the respective learned networks. [Please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb)
 
 ---------------------------------------------------------------
 ## DDPG Implementation for Reacher Environment
