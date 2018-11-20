@@ -54,7 +54,7 @@ Start with a random vector &theta; and repeat the following until convergence:
 
       <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\theta&space;\leftarrow&space;\theta&space;&plus;&space;\alpha\hat{g}&space;\;&space;...&space;\;&space;Equation&space;\,&space;6" title="\theta \leftarrow \theta + \alpha\hat{g} \; ... \; Equation \, 6" />
 
-The intuition behind the reinforce algorithm is that if the total reward is positive, then all the actions taken in that trajectory are reinforced whereas if the total rewards is negative, then all the actions taken in the trajectory are inhibited. Moreover, in order to speed up learning, typically m is set to 1.
+The intuition behind the reinforce algorithm is that if the total reward is positive, then all the actions taken in that trajectory are reinforced whereas if the total rewards is negative, then all the actions taken in the trajectory are inhibited. Moreover, to be computationally efficient, typically m is set to 1.
 
 While better than stochastic optimization methods, the Reinforce algorithm suffers from a few drawbacks:
   1. The gradient estimate is pretty noisy, especially for the case m=1, because a single trajectory maynot be representative of the policy.
