@@ -179,7 +179,7 @@ whereby using one-step TD learning (i.e. TD(0)):
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\nabla_{w_{v}}L(w_v)&space;=&space;-(r(s_t,&space;a_t)&space;&plus;&space;\hat{V}_{P_{\theta}}(s_{t^{'}},&space;w_v)&space;-&space;\hat{V}_{P_{\theta}}(s_t,&space;w_v))\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t,&space;w_v)&space;=&space;-\hat{A}_{P_{\theta}}(s_t,a_t,w_v)&space;\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t,&space;w_v)&space;\;&space;...&space;\,&space;Equation&space;\,&space;31" title="\nabla_{w_{v}}L(w_v) = -(r(s_t, a_t) + \hat{V}_{P_{\theta}}(s_{t^{'}}, w_v) - \hat{V}_{P_{\theta}}(s_t, w_v))\nabla_{w_v}\hat{V}_{P_{\theta}}(s_t, w_v) = -\hat{A}_{P_{\theta}}(s_t,a_t,w_v) \nabla_{w_v}\hat{V}_{P_{\theta}}(s_t, w_v) \; ... \, Equation \, 31" />
 
-Using the gradient estimate from Equation 29, the weight update equation for the Advantage function, and the remaining steps from the Reinforce algorithm is essentially what is known as the Advantage Actor Critic algorithm.
+Using the gradient estimate from Equation 29, the weight update equation for the Advantage function, and the remaining steps from the Reinforce algorithm is essentially what is known as the Advantage Actor-Critic algorithm.
 
 To briefly summarize the above discussion, the main downside of the Reinforce algorithm is that the gradient estimate is based upon the Monte-Carlo estimate of the expected total reward from the initial state-action pair -- which while has low bias, it has high variance. By using causality and subtracting out a baseline from the Monte-Carlo estimate, we can reduce the variance. The variance is further reduce by using a TD estimate of the total reward to go instead of a Monte-Carlo estimate.
 
