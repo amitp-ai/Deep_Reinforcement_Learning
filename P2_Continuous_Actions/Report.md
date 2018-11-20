@@ -117,7 +117,7 @@ whereby
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;\delta_{TD&space;\;&space;Error}&space;=&space;r(s_t,a_t)&space;&plus;&space;\max_a\hat{Q}_{P_\theta}(s_{t&plus;1},a,w)&space;-&space;\hat{Q}_{P_\theta}(s_{t},a_{t},w)&space;\:&space;...&space;\,&space;Equation&space;\,&space;17" title="\delta_{TD \; Error} = r(s_t,a_t) + \max_a\hat{Q}_{P_\theta}(s_{t+1},a,w) - \hat{Q}_{P_\theta}(s_{t},a_{t},w) \: ... \, Equation \, 17" />
 
-This is the basics of an actor-critic algorithm. While there are many variances of it, as we will see below, but this is the basic core of it.
+This is the basics of the actor-critic algorithm. While there are many variances of it, as we will see below, but this is the basic core of it.
 
 ## Advantage Actor-Critic Algorithm
 
