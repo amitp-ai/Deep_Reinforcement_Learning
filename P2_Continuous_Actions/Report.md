@@ -191,7 +191,7 @@ In stochastic case, the policy gradient integrates over both state and action sp
 
 DPG is essentially a deterministic version of Actor-Critic algorithm. For a basic DPG algorithm, we have two neural networks, one network (parameterized by &theta;) is estimating the optimal target policy and the second network (parameterized by w) is estimating the action-value function corresponding to the target policy. The below equations formalize this.
 
-As mentioned above, because the target policy is deterministic, the actor may not explore the state-space very well to find the optimal policy. To address it, we use a behavior policy (b(s<sub>t</sub>) that is different from the target policy. It is basically the target policy with some additional noise. For simplicity, we will use a Normal distribution as our noise source. But note that this term is like a hyper parameter, and in the below implementation for the Reacher environment, a different noise process is used.
+As mentioned above, because the target policy is deterministic, the actor may not explore the state-space very well to find the optimal policy. To address it, we use a behavior policy (b(s<sub>t</sub>)) that is different from the target policy. It is basically the target policy with some additional noise. For simplicity, we will use a Normal distribution as our noise source. But note that this term is like a hyper parameter, and in the below implementation for the Reacher environment, a different noise process is used.
 
 <img src="https://latex.codecogs.com/png.latex?\fn_cm&space;Target&space;\:&space;Policy&space;=&space;\mu_{\theta}(s_t)&space;\:&space;...&space;\,&space;Equation&space;\,&space;32a" title="Target \: Policy = \mu_{\theta}(s_t) \: ... \, Equation \, 32a" />
 
