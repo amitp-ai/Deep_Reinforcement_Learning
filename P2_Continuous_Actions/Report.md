@@ -182,7 +182,7 @@ whereby using one-step TD learning (i.e. TD(0)):
 
 Using the gradient estimator from Equation 29, the weight update from Equation 30, and the remaining steps from the basic Reinforce algorithm results in what is known as the Advantage Actor-Critic algorithm.
 
-To briefly summarize the above discussion, the main downside of the Reinforce algorithm is that the gradient estimator is based upon the Monte-Carlo estimator of the expected total reward from the initial state-action pair -- which while has low bias, it has high variance. By using causality and subtracting out a baseline from the Monte-Carlo estimator, we can reduce the variance. The variance is further reduced by using TD estimator of the total reward to go instead of Monte-Carlo estimator.
+To briefly summarize the above discussion, the main downside of the Reinforce algorithm is that the gradient estimator is based upon the Monte-Carlo estimator of the expected total reward from the initial state-action pair -- which while has low bias, it has high variance. By using causality and subtracting out a baseline from the Monte-Carlo estimator, we can reduce the variance. The variance is further reduced by using TD estimator of the expected total reward to go instead of Monte-Carlo estimator.
 
 ## Deterministic Policy Gradient (DPG) Algorithm
 
