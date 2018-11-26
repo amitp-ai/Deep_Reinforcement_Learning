@@ -61,9 +61,9 @@ While better than stochastic optimization methods, the Reinforce algorithm suffe
   2. There is no clear credit assignment. A trajectory may contain many good and bad actions, and whether those actions are reinforced or not depend only on the total reward achieved starting from the initial state.
   3. It is very sensitive to the absolute value of the rewards. For example, adding a fixed constant to all the rewards can drastically change the behavior of the algorithm. Such a trivial transformation should have no effect on the optimal policy.
 
-By the definition of the gradient, &nabla;<sub>&theta;</sub>U<sub>&theta;</sub> points in the direction of the maximum change in U<sub>&theta;</sub>. However, at a fundamental level, the above drawbacks of Reinforce algorithm are due to the fact that the Monte-Carlo estimator of &nabla;<sub>&theta;</sub>U<sub>&theta;</sub> (i.e. ĝ) has high variance. If we can reduce its variance, then our estimate of gradient ĝ will be closer to the true gradient &nabla;<sub>&theta;</sub>U<sub>&theta;</sub>.
+By the definition of the gradient, &nabla;<sub>&theta;</sub>U<sub>&theta;</sub> points in the direction of the maximum change in U<sub>&theta;</sub>. However, at a fundamental level, the above drawbacks of Reinforce algorithm are due to the fact that the Monte-Carlo estimator of &nabla;<sub>&theta;</sub>U<sub>&theta;</sub> (i.e. ĝ) has high variance. If we can reduce its variance, then our estimate of gradient (&gcirc;) will be closer to the true gradient &nabla;<sub>&theta;</sub>U<sub>&theta;</sub>.
 
-While the Monte-Carlo estimator of the gradient &gcirc; is unbiased, it exhibits high variance. As discussed below, there are a few ways of reducing variance without introducing bias: 1) using causality and 2) using a baseline.
+While the Monte-Carlo estimator of the gradient (&gcirc;) is unbiased, it exhibits high variance. As discussed below, there are a few ways of reducing variance without introducing bias: 1) using causality and 2) using a baseline.
 
 ## Actor-Critic Algorithm
 
