@@ -1,8 +1,8 @@
 #MADDPG
 def seeding(seed=1):
-	random.seed(seed)
-	np.random.seed(seed)
-	torch.manual_seed(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
 
 def hidden_init(layer):
     fan_in = layer.weight.data.size()[0]
@@ -72,17 +72,17 @@ class Critic(nn.Module):
 
 
 class MADDPG(object):
-	'''The main class that defines and trains all the agents'''
-	def __init__(self, state_size, action_size, num_agents):
+    '''The main class that defines and trains all the agents'''
+    def __init__(self, state_size, action_size, num_agents):
         self.state_size = state_size
         self.action_size = action_size
         self.num_agents = num_agents
         self.memory = ReplayBuffer(BUFFER_SIZE, BATCH_SIZE) # Replay memory
-		self.maddpg_agents = [DDPG(state_size, action_size), DDPG(state_size, action_size)] #create agents
+        self.maddpg_agents = [DDPG(state_size, action_size), DDPG(state_size, action_size)] #create agents
 
     def reset(self):
-    	for agent in self.maddpg_agents:
-    		agent.reset()
+        for agent in self.maddpg_agents:
+            agent.reset()
 
     def step(self, full_states, full_actions, full_rewards, full_next_states, full_dones):
         """Save experience in replay memory, and use random sample from buffer to learn."""
@@ -101,51 +101,51 @@ class MADDPG(object):
             self.learn(experiences, GAMMA)
 
     def learn(self, experiences, gamma):
-    	# index 0 is for agent 0 and index 1 is for agent 1
-    	full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
-    	list_actor_agent_full_actions = []
-    	critic_full_next_actions = []
-		for agent_id, agent in enumerate(self.maddpg_agents):
-    		strt = self.state_size*agent_id
-    		stp = strt + self.state_size
-    		agent_state = full_states[:,strt:stp]
-    		agent_next_state = full_next_states[:,strt:stp]
+        # index 0 is for agent 0 and index 1 is for agent 1
+        full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
+        list_actor_agent_full_actions = []
+        critic_full_next_actions = []
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            strt = self.state_size*agent_id
+            stp = strt + self.state_size
+            agent_state = full_states[:,strt:stp]
+            agent_next_state = full_next_states[:,strt:stp]
 
-    		strt = self.agent_size*agent_id
-    		stp = strt + self.agent_size
-    		temp_full_actions = np.copy(full_actions)
-    		temp_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
-    		list_actor_agent_full_actions.append(temp_full_actions)
+            strt = self.agent_size*agent_id
+            stp = strt + self.agent_size
+            temp_full_actions = np.copy(full_actions)
+            temp_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
+            list_actor_agent_full_actions.append(temp_full_actions)
 
-    		critic_full_next_actions.append(agent.actor_target.forward(agent_next_state))
+            critic_full_next_actions.append(agent.actor_target.forward(agent_next_state))
 
-    	critic_full_next_actions = np.concatenate(critic_full_next_actions, axis=1)
-    	for agent_id, agent in enumerate(self.maddpg_agents):
-    		experiences = (full_states, list_actor_agent_full_actions[agent_id], full_actions, full_rewards[:,agent_id] \
-    						full_dones[:,agent_id], full_next_states, critic_full_next_actions)
-    		agent.learn(experiences, gamma)
+        critic_full_next_actions = np.concatenate(critic_full_next_actions, axis=1)
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            experiences = (full_states, list_actor_agent_full_actions[agent_id], full_actions, full_rewards[:,agent_id] \
+                            full_dones[:,agent_id], full_next_states, critic_full_next_actions)
+            agent.learn(experiences, gamma)
 
-   	def act(self, full_states):
-   		actions = []
-   		for agent_id, agent in enumerate(self.maddpg_agents):
-   			action = agent.act(np.expand_dims(full_states[agent_id,:], axis=0))
-   			action = np.reshape(action, shape=(1,-1))
-   			actions.append(action)
-   		actions = np.concatenate(actions, axis=0)
-   		return actions
+    def act(self, full_states):
+        actions = []
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            action = agent.act(np.expand_dims(full_states[agent_id,:], axis=0))
+            action = np.reshape(action, shape=(1,-1))
+            actions.append(action)
+        actions = np.concatenate(actions, axis=0)
+        return actions
 
-   	def save_maddpg(self):
-   		for agent_id, agent in enumerate(self.maddpg_agents):
-	        torch.save(agent.actor_local.state_dict(), 'checkpoint_actor_local_' + str(agent_id) + '.pth')
-	        torch.save(agent.critic_local.state_dict(), 'checkpoint_critic_local_' + str(agent_id) + '.pth')
+    def save_maddpg(self):
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            torch.save(agent.actor_local.state_dict(), 'checkpoint_actor_local_' + str(agent_id) + '.pth')
+            torch.save(agent.critic_local.state_dict(), 'checkpoint_critic_local_' + str(agent_id) + '.pth')
 
-   	def load_maddpg(self):
-   		for agent_id, agent in enumerate(self.maddpg_agents):
-   			#Since the model is trained on gpu, need to load all gpu tensors to cpu:
-	        agent.actor_local.load_state_dict(torch.load('checkpoint_actor_local_' + str(agent_id) + '.pth', map_location=lambda storage, loc: storage))
-	        agent.actor_local.load_state_dict(torch.load('checkpoint_critic_local_' + str(agent_id) + '.pth', map_location=lambda storage, loc: storage))
+    def load_maddpg(self):
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            #Since the model is trained on gpu, need to load all gpu tensors to cpu:
+            agent.actor_local.load_state_dict(torch.load('checkpoint_actor_local_' + str(agent_id) + '.pth', map_location=lambda storage, loc: storage))
+            agent.actor_local.load_state_dict(torch.load('checkpoint_critic_local_' + str(agent_id) + '.pth', map_location=lambda storage, loc: storage))
 
-	        agent.eps = EPS_END #initialize to the final epsilon value upon training
+            agent.eps = EPS_END #initialize to the final epsilon value upon training
 
 
 class DDPG(object):
@@ -445,5 +445,3 @@ def MADDPG_Inference(n_episodes=3):
     print('Mean score is: ', np.mean(np.array(scores_list)))
 
 MADDPG_Inference()
-
-env.close()
