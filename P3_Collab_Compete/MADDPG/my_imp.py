@@ -100,11 +100,78 @@ class MADDPG(object):
         
         # Learn, if enough samples are available in memory
         if len(self.memory) > BATCH_SIZE:
-            experiences = self.memory.sample()
-            self.learn(experiences, GAMMA)
+            #experiences = self.memory.sample()
+            #self.learn(experiences, GAMMA)
+            self.learn(GAMMA)
 
-    def learn(self, experiences, gamma):
+     def learn(self, gamma):
         #for learning MADDPG
+        # index 0 is for agent 0 and index 1 is for agent 1
+
+        full_states0, full_actions0, full_rewards0, full_next_states0, full_dones0 = self.memory.sample()
+        full_states1, full_actions1, full_rewards1, full_next_states1, full_dones1 = self.memory.sample()
+        
+        #zero out the gradients first
+        for agent in self.maddpg_agents:
+            agent.zero_out_grads()
+        
+        critic_full_next_actions = []
+        agent_id = 0
+        agent = self.maddpg_agents[agent_id]        
+        strt = self.state_size*agent_id
+        stp = strt + self.state_size
+        agent_next_state = full_next_states0[:,strt:stp]
+        critic_full_next_actions.append(agent.actor_target.forward(agent_next_state))
+        agent_id = 1
+        agent = self.maddpg_agents[agent_id]        
+        strt = self.state_size*agent_id
+        stp = strt + self.state_size
+        agent_next_state = full_next_states1[:,strt:stp]
+        critic_full_next_actions.append(agent.actor_target.forward(agent_next_state))
+        # convert list to torch tensor
+        critic_full_next_actions = torch.cat(critic_full_next_actions, dim=1)
+
+        #agent 0 tarining
+        agent_id = 0
+        agent = self.maddpg_agents[agent_id] 
+        strt = self.state_size*agent_id
+        stp = strt + self.state_size
+        agent_state = full_states0[:,strt:stp]
+
+        strt = self.action_size*agent_id
+        stp = strt + self.action_size
+        actor_full_actions = full_actions0.clone() #create a deep copy with gradient on
+        actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
+    
+        experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_id], \
+                        full_dones[:,agent_id], full_next_states, critic_full_next_actions)
+        retain_graph_value = True #retain graph after first agent
+        agent.learn(experiences, gamma, retain_graph_value)
+
+        #agent 1 tarining
+        agent_id = 1
+        agent = self.maddpg_agents[agent_id] 
+        strt = self.state_size*agent_id
+        stp = strt + self.state_size
+        agent_state = full_states1[:,strt:stp]
+
+        strt = self.action_size*agent_id
+        stp = strt + self.action_size
+        actor_full_actions = full_actions1.clone() #create a deep copy with gradient on
+        actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
+    
+        experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_id], \
+                        full_dones[:,agent_id], full_next_states, critic_full_next_actions)
+        retain_graph_value = False #don't retain graph after second agent
+        agent.learn(experiences, gamma, retain_graph_value)
+
+        for agent in self.maddpg_agents:
+            agent.update_parameters() #update both agents' parameters after first computing both agents' gradients
+
+
+            
+    def learn_maddpg2(self, experiences, gamma):
+        #for learning MADDPG ver 1
         # index 0 is for agent 0 and index 1 is for agent 1
         full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
         
@@ -455,69 +522,3 @@ class ReplayBuffer(object):
         """Return the current size of internal memory."""
         return len(self.memory)
     
-    
-    #Constants
-BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 128        # minibatch size
-GAMMA = 0.99            # discount factor
-TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 1e-4 #3e-5 #1e-4         # learning rate of the actor 
-LR_CRITIC = 1e-4 #3e-5 #1e-4        # learning rate of the critic
-WEIGHT_DECAY_actor = 0.0 #3e-4 #0        # L2 weight decay
-WEIGHT_DECAY_critic = 0.0 #1e-6 #0        # L2 weight decay
-#to decay exploration as it learns
-EPS_START=1.0
-EPS_END=0.15 #0.05
-EPS_DECAY=3e-5 #1e-4 #3e-5
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-seeding()
-state_size=env_info.vector_observations.shape[1]
-action_size=brain.vector_action_space_size
-num_agents=env_info.vector_observations.shape[0]
-MADDPG_obj = MADDPG(state_size=state_size, action_size=action_size, num_agents=num_agents)
-###MADDPG_obj.load_maddpg() #load the local network weights
-
-
-#Training
-def MADDPG_Training(n_episodes=4000):
-    scores_deque = deque(maxlen=100)
-    scores_list = []
-    scores_list_100_avg = []
-    for i_episode in range(1, n_episodes+1):
-        env_info = env.reset(train_mode=True)[brain_name]     # reset the environment
-        states = env_info.vector_observations                   # get the current states (for all agents)
-        MADDPG_obj.reset() #reset the MADDPG_obj OU Noise
-        scores = np.zeros(num_agents)                          # initialize the score (for each agent in MADDPG)
-        while True:
-            actions = MADDPG_obj.act(states)
-            env_info = env.step(actions)[brain_name]           # send all actions to the environment
-            next_states = env_info.vector_observations         # get next state (for each agent in MADDPG)
-            rewards = env_info.rewards                         # get rewards (for each agent in MADDPG)
-            dones = env_info.local_done                        # see if episode finished
-            scores += rewards                                  # update the score (for each agent in MADDPG)
-            MADDPG_obj.step(states, actions, rewards, next_states, dones) #train the MADDPG_obj           
-            states = next_states                               # roll over states to next time step
-            if np.any(dones):                                  # exit loop if episode finished
-                break
-            #print('Total score (averaged over agents) this episode: {}'.format(np.mean(score)))
-        
-        scores_deque.append(np.max(scores))
-        scores_list.append(np.max(scores))
-        scores_list_100_avg.append(np.mean(scores_deque))
-        
-        #print('\rEpisode {}\tAverage Score: {:.2f}\tScore: {}'.format(i_episode, np.mean(scores_deque), score), end="")
-        print('Episode {}\tAverage Score: {:.2f}\tCurrent Score: {}'.format(i_episode, np.mean(scores_deque), np.max(scores)))
-        print('Epsilon: {} and Memory size: {}'.format(MADDPG_obj.maddpg_agents[0].eps, len(MADDPG_obj.memory)))
-        
-        if i_episode % 100 == 0:
-            MADDPG_obj.save_maddpg()
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
-            
-        if np.mean(scores_deque) > 0.5 and len(scores_deque) >= 100:
-            MADDPG_obj.save_maddpg()
-            print('\rEpisode {}\tAverage Score: {:.2f}'.format(i_episode, np.mean(scores_deque)))
-            break
-            
-    return scores_list, scores_list_100_avg
-
