@@ -115,6 +115,7 @@ class MADDPG(object):
         for agent in self.maddpg_agents:
             agent.zero_out_grads()
         
+        #get critic_full_next_actions
         critic_full_next_actions = []
         agent_id = 0
         agent = self.maddpg_agents[agent_id]        
@@ -131,7 +132,7 @@ class MADDPG(object):
         # convert list to torch tensor
         critic_full_next_actions = torch.cat(critic_full_next_actions, dim=1)
 
-        #agent 0 tarining
+        #agent 0 training
         agent_id = 0
         agent = self.maddpg_agents[agent_id] 
         strt = self.state_size*agent_id
@@ -148,7 +149,7 @@ class MADDPG(object):
         retain_graph_value = True #retain graph after first agent
         agent.learn(experiences, gamma, retain_graph_value)
 
-        #agent 1 tarining
+        #agent 1 training
         agent_id = 1
         agent = self.maddpg_agents[agent_id] 
         strt = self.state_size*agent_id
