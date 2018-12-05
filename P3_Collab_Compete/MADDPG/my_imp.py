@@ -1,4 +1,3 @@
-
 #MADDPG
 def seeding(seed=10):
     random.seed(seed)
@@ -190,22 +189,30 @@ class MADDPG(object):
             experiences = (agent_state, agent_action, agent_reward, agent_next_state, agent_done)
             agent.learn(experiences, gamma)
   
-      def learn(self, experiences, gamma):
+    def learn(self, experiences, gamma):
         #for learning Double DDPG ver 3
         # use with step_maddpg
         # index 0 is for agent 0 and index 1 is for agent 1
         full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
 
+        full_next_actions = []
+        full_curr_actions = []
+        for agent in self.maddpg_agents:
+            with torch.no_grad():
+                full_next_actions.append(agent.actor_target.forward(full_next_states))
+                full_curr_actions.append(agent.)
+        full_next_actions = torch.cat(full_next_actions, dim=1)
+        
         for agent_id, agent in enumerate(self.maddpg_agents):            
             agent_reward = full_rewards[agent_id]
             agent_done = full_dones[agent_id]
             
-            experiences = (full_states, full_actions, agent_reward, full_next_states, agent_done)
+            experiences = (full_states, full_actions, agent_reward, full_next_states, agent_done, full_next_actions)
             agent.learn(experiences, gamma)
 
             
     def act(self, full_states):
-         # all actions between -1 and 1
+        # all actions between -1 and 1
         actions = []
         for agent_id, agent in enumerate(self.maddpg_agents):
             #action = agent.act(np.expand_dims(full_states[agent_id,:], axis=0))
@@ -351,7 +358,7 @@ class DDPG(object):
         self.soft_update(self.actor_local, self.actor_target, TAU)  
         
 
-    def learn(self, experiences, gamma):
+    def learn_ddpg_ver1(self, experiences, gamma):
         #for double ddpg
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
@@ -369,6 +376,50 @@ class DDPG(object):
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
         actions_next = self.actor_target(next_states)
+        Q_targets_next = self.critic_target(next_states, actions_next)
+        # Compute Q targets for current states (y_i)
+        Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
+        # Compute critic loss
+        Q_expected = self.critic_local(states, actions)
+        critic_loss = F.mse_loss(Q_expected, Q_targets)
+        # Minimize the loss
+        self.critic_optimizer.zero_grad()
+        critic_loss.backward()
+        #torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1.0) #clip the gradient for the critic network (Udacity hint)
+        self.critic_optimizer.step()
+
+        # ---------------------------- update actor ---------------------------- #
+        # Compute actor loss
+        actions_pred = self.actor_local(states)
+        actor_loss = -self.critic_local(states, actions_pred).mean()
+        # Minimize the loss
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
+
+        # ----------------------- update target networks ----------------------- #
+        self.soft_update(self.critic_local, self.critic_target, TAU)
+        self.soft_update(self.actor_local, self.actor_target, TAU)                     
+
+
+    def learn(self, experiences, gamma):
+        #for double ddpg
+        """Update policy and value parameters using given batch of experience tuples.
+        Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
+        where:
+            actor_target(state) -> action
+            critic_target(state, action) -> Q-value
+
+        Params
+        ======
+            experiences (Tuple[torch.Tensor]): tuple of (s, a, r, s', done) tuples 
+            gamma (float): discount factor
+        """
+        states, actions, rewards, next_states, dones, actions_next = experiences
+
+        # ---------------------------- update critic ---------------------------- #
+        # Get predicted next-state actions and Q values from target models
+        ###actions_next = self.actor_target(next_states)
         Q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
         Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
@@ -471,4 +522,3 @@ class ReplayBuffer(object):
         """Return the current size of internal memory."""
         return len(self.memory)
     
-
