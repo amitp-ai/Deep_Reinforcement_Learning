@@ -103,8 +103,8 @@ class MADDPG(object):
             #experiences = self.memory.sample()
             #self.learn(experiences, GAMMA)
             self.learn(GAMMA)
-
-     def learn(self, gamma):
+    
+    def learn(self, gamma):
         #for learning MADDPG
         # index 0 is for agent 0 and index 1 is for agent 1
 
@@ -137,15 +137,15 @@ class MADDPG(object):
         agent = self.maddpg_agents[agent_id] 
         strt = self.state_size*agent_id
         stp = strt + self.state_size
-        agent_state = full_states0[:,strt:stp]
+        agent_state0 = full_states0[:,strt:stp]
 
         strt = self.action_size*agent_id
         stp = strt + self.action_size
-        actor_full_actions = full_actions0.clone() #create a deep copy with gradient on
-        actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
+        actor_full_actions0 = full_actions0.clone() #create a deep copy with gradient on
+        actor_full_actions0[:,strt:stp] = agent.actor_local.forward(agent_state0)
     
-        experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_id], \
-                        full_dones[:,agent_id], full_next_states, critic_full_next_actions)
+        experiences = (full_states0, actor_full_actions0, full_actions0, full_rewards0[:,agent_id], \
+                        full_dones0[:,agent_id], full_next_states0, critic_full_next_actions)
         retain_graph_value = True #retain graph after first agent
         agent.learn(experiences, gamma, retain_graph_value)
 
@@ -154,15 +154,15 @@ class MADDPG(object):
         agent = self.maddpg_agents[agent_id] 
         strt = self.state_size*agent_id
         stp = strt + self.state_size
-        agent_state = full_states1[:,strt:stp]
+        agent_state1 = full_states1[:,strt:stp]
 
         strt = self.action_size*agent_id
         stp = strt + self.action_size
-        actor_full_actions = full_actions1.clone() #create a deep copy with gradient on
-        actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
+        actor_full_actions1 = full_actions1.clone() #create a deep copy with gradient on
+        actor_full_actions1[:,strt:stp] = agent.actor_local.forward(agent_state1)
     
-        experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_id], \
-                        full_dones[:,agent_id], full_next_states, critic_full_next_actions)
+        experiences = (full_states1, actor_full_actions1, full_actions1, full_rewards1[:,agent_id], \
+                        full_dones1[:,agent_id], full_next_states1, critic_full_next_actions)
         retain_graph_value = False #don't retain graph after second agent
         agent.learn(experiences, gamma, retain_graph_value)
 
