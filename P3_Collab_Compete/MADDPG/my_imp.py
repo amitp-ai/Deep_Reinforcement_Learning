@@ -190,7 +190,7 @@ class MADDPG(object):
             experiences = (agent_state, agent_action, agent_reward, agent_next_state, agent_done)
             agent.learn(experiences, gamma)
   
-    def learn(self, experiences, gamma):
+    def learn(self, gamma):
         #for learning Double DDPG ver 3
         # use with step_maddpg
         # index 0 is for agent 0 and index 1 is for agent 1
@@ -204,9 +204,8 @@ class MADDPG(object):
             full_next_actions = []
             full_curr_actions = []
             for agent in self.maddpg_agents:
-                with torch.no_grad():
-                    full_next_actions.append(agent.actor_target.forward(full_next_states))
-                    full_curr_actions.append(agent.actor_local.forward(full_states))
+                full_next_actions.append(agent.actor_target.forward(full_next_states))
+                full_curr_actions.append(agent.actor_local.forward(full_states))
             full_next_actions = torch.cat(full_next_actions, dim=1)
             full_curr_actions = torch.cat(full_curr_actions, dim=1)
                         
@@ -539,4 +538,6 @@ class ReplayBuffer(object):
     def __len__(self):
         """Return the current size of internal memory."""
         return len(self.memory)
+
+  https://github.com/weicheng113/p3_collab-compet
     
