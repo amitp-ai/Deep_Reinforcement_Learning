@@ -100,19 +100,19 @@ class MADDPG(object):
         
         # Learn, if enough samples are available in memory
         if len(self.memory) > BATCH_SIZE:
-            #experiences = self.memory.sample()
-            #self.learn(experiences, GAMMA)    
-            self.learn(GAMMA)
-            
-            
-    def learn_maddpg(self, experiences, gamma):
-        #for learning MADDPG ver 1
-        # index 0 is for agent 0 and index 1 is for agent 1
-        full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
-        
-        #zero out the gradients first
+            for agent_id in range(self.num_agents):
+                samples = self.memory.sample()
+                self.learn(samples, agent_no, GAMMA)
+            self.soft_update_all()
+
+    def soft_update_all(self):
+        #soft update all the agents            
         for agent in self.maddpg_agents:
-            agent.zero_out_grads()
+            agent.soft_update_all()
+    
+    def learn(self, samples, agent_no, gamma):
+        #for learning MADDPG ver 1
+        full_states, full_actions, full_rewards, full_next_states, full_dones = samples
         
         critic_full_next_actions = []
         for agent_id, agent in enumerate(self.maddpg_agents):
@@ -122,75 +122,23 @@ class MADDPG(object):
             critic_full_next_actions.append(agent.actor_target.forward(agent_next_state))
         critic_full_next_actions = torch.cat(critic_full_next_actions, dim=1)
 
-        retain_graph_value = True
-        for agent_id, agent in enumerate(self.maddpg_agents):
-            strt = self.state_size*agent_id
-            stp = strt + self.state_size
-            agent_state = full_states[:,strt:stp]
+        agent = self.maddpg_agents[agent_no]
+        strt = self.state_size*agent_no
+        stp = strt + self.state_size
+        agent_state = full_states[:,strt:stp]
 
-            strt = self.action_size*agent_id
-            stp = strt + self.action_size
-            actor_full_actions = full_actions.clone() #create a deep copy
-            actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
-            
-            experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_id], \
-                            full_dones[:,agent_id], full_next_states, critic_full_next_actions)
-            
-            if agent_id == 1: retain_graph_value = False #don't retain graph after second agent
-            agent.learn(experiences, gamma, retain_graph_value)
-            
-        for agent in self.maddpg_agents:
-            agent.update_parameters() #update both agents' parameters after first computing both agents' gradients
-
-
+        strt = self.action_size*agent_no
+        stp = strt + self.action_size
+        actor_full_actions = full_actions.clone() #create a deep copy
+        actor_full_actions[:,strt:stp] = agent.actor_local.forward(agent_state)
         
+        experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_no], \
+                        full_dones[:,agent_no], full_next_states, critic_full_next_actions)
+        
+        agent.learn(experiences, gamma, retain_graph_value)
 
-    def step_double_ddpg(self, full_states, full_actions, full_rewards, full_next_states, full_dones):
-        #stepping for double ddpg. 
-        # But not not sure if it will work because for the same state, the two agents actions will be different as well as their rewards. But it does work indeed.
-        """Save experience in replay memory, and use random sample from buffer to learn."""
-        # index 0 is for agent 0 and index 1 is for agent 1
-        for agent_id in range(self.num_agents):
-            state = full_states[agent_id,:].reshape(1,-1)
-            action = full_actions[agent_id,:].reshape(1,-1)
-            reward = full_rewards[agent_id]
-            next_state = full_next_states[agent_id,:].reshape(1,-1)
-            done = full_dones[agent_id]
-            # Save experience / reward
-            self.memory.add(state, action, reward, next_state, done)
-
-        # Learn, if enough samples are available in memory
-        if len(self.memory) > BATCH_SIZE:
-            self.learn(GAMMA)
-            
-    def learn_double_ddpg(self, gamma):
-        #for learning double DDPG
-        # index 0 is for agent 0 and index 1 is for agent 1
-        for agent_id, agent in enumerate(self.maddpg_agents):            
-            agent.learn(self.memory.sample(), gamma)
-
-    def learn_double_ddpg_2(self, experiences, gamma):
-        #for learning Doouble DDPG ver 2
-        # index 0 is for agent 0 and index 1 is for agent 1
-        full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
-
-        for agent_id, agent in enumerate(self.maddpg_agents):
-            strt = self.state_size*agent_id
-            stp = strt + self.state_size
-            agent_state = full_states[:,strt:stp]
-            agent_next_state = full_next_states[:,strt:stp]
-
-            strt_a = self.action_size*agent_id
-            stp_a = strt_a + self.action_size
-            agent_action = full_actions[:,strt_a:stp_a]
-            
-            agent_reward = full_rewards[agent_id]
-            agent_done = full_dones[agent_id]
-            
-            experiences = (agent_state, agent_action, agent_reward, agent_next_state, agent_done)
-            agent.learn(experiences, gamma)
   
-    def learn(self, gamma):
+    def learn_ddpg(self, gamma):
         #for learning Double DDPG ver 3
         # use with step_maddpg
         # index 0 is for agent 0 and index 1 is for agent 1
@@ -209,8 +157,8 @@ class MADDPG(object):
             full_next_actions = torch.cat(full_next_actions, dim=1)
             full_curr_actions = torch.cat(full_curr_actions, dim=1)
                         
-            agent_reward = full_rewards[learn_agent_id]
-            agent_done = full_dones[learn_agent_id]
+            agent_reward = full_rewards[:,learn_agent_id]
+            agent_done = full_dones[:,learn_agent_id]
             experiences = (full_states, full_actions, agent_reward, full_next_states, full_curr_actions, full_next_actions, agent_done)
 
             # get the loss
@@ -240,12 +188,11 @@ class MADDPG(object):
             agent.soft_update(agent.actor_local, agent.actor_target, TAU)     
 
             
-    def act(self, full_states):
+    def act(self, full_states, add_noise=True):
         # all actions between -1 and 1
         actions = []
         for agent_id, agent in enumerate(self.maddpg_agents):
-            #action = agent.act(np.expand_dims(full_states[agent_id,:], axis=0))
-            action = agent.act(full_states.reshape(1,-1)) #for fully double ddpg
+            action = agent.act(np.reshape(full_states[agent_id,:], newshape=(1,-1)), add_noise)
             action = np.reshape(action, newshape=(1,-1))            
             actions.append(action)
         actions = np.concatenate(actions, axis=0)
@@ -282,30 +229,29 @@ class DDPG(object):
         self.state_size = state_size
         self.action_size = action_size
         
-        network_adjustmment = 2 #1 for double DDPG and 2 for MADDPG
 
         # Actor Network (w/ Target Network)
-        self.actor_local = Actor(network_adjustmment*state_size, action_size).to(device)
-        self.actor_target = Actor(network_adjustmment*state_size, action_size).to(device)
+        self.actor_local = Actor(state_size, action_size).to(device)
+        self.actor_target = Actor(state_size, action_size).to(device)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=LR_ACTOR, weight_decay=WEIGHT_DECAY_actor)
 
         # Critic Network (w/ Target Network)
-        self.critic_local = Critic(network_adjustmment*state_size, network_adjustmment*action_size).to(device)
-        self.critic_target = Critic(network_adjustmment*state_size, network_adjustmment*action_size).to(device)
+        self.critic_local = Critic(2*state_size, 2*action_size).to(device)
+        self.critic_target = Critic(2*state_size, 2*action_size).to(device)
         self.critic_optimizer = optim.Adam(self.critic_local.parameters(), lr=LR_CRITIC, weight_decay=WEIGHT_DECAY_critic)
 
         # Noise process
         self.noise = OUNoise(action_size) #single agent only
         self.eps = EPS_START
     
-        # Make sure target is initialized with the same weight as the source (found on slack to make big difference)
+        # Make sure target is initialized with the same weight as the source (makes a big difference)
         self.hard_update(self.actor_target, self.actor_local)
         self.hard_update(self.critic_target, self.critic_local)
 
 
     def act(self, states, add_noise=True):
         """Returns actions for given state as per current policy."""
-        states = torch.from_numpy(states).float().to(device)
+        #states = torch.from_numpy(states).float().to(device)
         self.actor_local.eval()
         with torch.no_grad():
             actions = self.actor_local(states).cpu().data.numpy()
@@ -327,7 +273,7 @@ class DDPG(object):
     def reset(self):
         self.noise.reset()
 
-    def learn_maddpg(self, experiences, gamma, retain_graph_value):
+    def learn(self, experiences, gamma, retain_graph_value):
         #for MADDPG
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
@@ -351,67 +297,6 @@ class DDPG(object):
         Q_expected = self.critic_local(full_states, full_actions)
         critic_loss = F.mse_loss(Q_expected, Q_targets)
         # Minimize the loss
-        #self.critic_optimizer.zero_grad() #don't zero out here
-        critic_loss.backward(retain_graph=retain_graph_value)
-        #torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1.0) #clip the gradient for the critic network (Udacity hint)
-        #self.critic_optimizer.step() #don't update here
-
-        # ---------------------------- update actor ---------------------------- #
-        # Compute actor loss
-        actor_loss = -self.critic_local.forward(full_states, actor_full_actions).mean() #-ve b'cse we want to do gradient ascent
-        # Minimize the loss
-        #self.actor_optimizer.zero_grad() #don't zero out here
-        actor_loss.backward(retain_graph=retain_graph_value)
-        #self.actor_optimizer.step() #don't update here
-
-        # ----------------------- update target networks ----------------------- #
-        #self.soft_update(self.critic_local, self.critic_target, TAU) #don't update here
-        #self.soft_update(self.actor_local, self.actor_target, TAU) #don't update here                    
-
-
-    def zero_out_grads(self):
-        #for maddpg
-        self.critic_optimizer.zero_grad()
-        self.actor_optimizer.zero_grad()
-        
-        
-    def update_parameters(self):
-        #for maddpg
-        
-        #update actor and critic networks
-        self.critic_optimizer.step()
-        self.actor_optimizer.step()
-        
-        # update target networks
-        self.soft_update(self.critic_local, self.critic_target, TAU)
-        self.soft_update(self.actor_local, self.actor_target, TAU)  
-        
-
-    def learn_ddpg_ver1(self, experiences, gamma):
-        #for double ddpg
-        """Update policy and value parameters using given batch of experience tuples.
-        Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
-        where:
-            actor_target(state) -> action
-            critic_target(state, action) -> Q-value
-
-        Params
-        ======
-            experiences (Tuple[torch.Tensor]): tuple of (s, a, r, s', done) tuples 
-            gamma (float): discount factor
-        """
-        states, actions, rewards, next_states, dones = experiences
-
-        # ---------------------------- update critic ---------------------------- #
-        # Get predicted next-state actions and Q values from target models
-        actions_next = self.actor_target(next_states)
-        Q_targets_next = self.critic_target(next_states, actions_next)
-        # Compute Q targets for current states (y_i)
-        Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
-        # Compute critic loss
-        Q_expected = self.critic_local(states, actions)
-        critic_loss = F.mse_loss(Q_expected, Q_targets)
-        # Minimize the loss
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         #torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1.0) #clip the gradient for the critic network (Udacity hint)
@@ -419,19 +304,20 @@ class DDPG(object):
 
         # ---------------------------- update actor ---------------------------- #
         # Compute actor loss
-        actions_pred = self.actor_local(states)
-        actor_loss = -self.critic_local(states, actions_pred).mean()
+        actor_loss = -self.critic_local.forward(full_states, actor_full_actions).mean() #-ve b'cse we want to do gradient ascent
         # Minimize the loss
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
-        self.actor_optimizer.step()
+        self.actor_optimizer.step()                  
 
+
+    def soft_update_all(self):
         # ----------------------- update target networks ----------------------- #
         self.soft_update(self.critic_local, self.critic_target, TAU)
-        self.soft_update(self.actor_local, self.actor_target, TAU)                     
+        self.soft_update(self.actor_local, self.actor_target, TAU)
 
 
-    def learn(self, experiences, gamma):
+    def learn_ddpg(self, experiences, gamma):
         #for fully double ddpg
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
@@ -538,6 +424,3 @@ class ReplayBuffer(object):
     def __len__(self):
         """Return the current size of internal memory."""
         return len(self.memory)
-
-  https://github.com/weicheng113/p3_collab-compet
-    
