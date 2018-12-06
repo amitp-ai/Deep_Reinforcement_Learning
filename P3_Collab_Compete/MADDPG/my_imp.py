@@ -100,8 +100,9 @@ class MADDPG(object):
         
         # Learn, if enough samples are available in memory
         if len(self.memory) > BATCH_SIZE:
-            experiences = self.memory.sample()
-            self.learn(experiences, GAMMA)    
+            #experiences = self.memory.sample()
+            #self.learn(experiences, GAMMA)    
+            self.learn(GAMMA)
             
             
     def learn_maddpg(self, experiences, gamma):
@@ -193,38 +194,48 @@ class MADDPG(object):
         #for learning Double DDPG ver 3
         # use with step_maddpg
         # index 0 is for agent 0 and index 1 is for agent 1
-        full_states, full_actions, full_rewards, full_next_states, full_dones = experiences
 
-        full_next_actions = []
-        full_curr_actions = []
-        for agent in self.maddpg_agents:
-            with torch.no_grad():
-                full_next_actions.append(agent.actor_target.forward(full_next_states))
-                full_curr_actions.append(agent.actor_local.forward(full_states))
-        full_next_actions = torch.cat(full_next_actions, dim=1)
-        full_curr_actions = torch.cat(full_curr_actions, dim=1)
-        
         losses = []
-        for agent_id, agent in enumerate(self.maddpg_agents):
-            agent_reward = full_rewards[agent_id]
-            agent_done = full_dones[agent_id]
-            
+        for learn_agent_id in range(self.num_agents):
+            #compute the loss
+            sampled_experiences = self.memory.sample()
+            full_states, full_actions, full_rewards, full_next_states, full_dones = sampled_experiences
+
+            full_next_actions = []
+            full_curr_actions = []
+            for agent in self.maddpg_agents:
+                with torch.no_grad():
+                    full_next_actions.append(agent.actor_target.forward(full_next_states))
+                    full_curr_actions.append(agent.actor_local.forward(full_states))
+            full_next_actions = torch.cat(full_next_actions, dim=1)
+            full_curr_actions = torch.cat(full_curr_actions, dim=1)
+                        
+            agent_reward = full_rewards[learn_agent_id]
+            agent_done = full_dones[learn_agent_id]
             experiences = (full_states, full_actions, agent_reward, full_next_states, full_curr_actions, full_next_actions, agent_done)
-            losses.append(agent.learn(experiences, gamma))
 
+            # get the loss
+            agent = self.maddpg_agents[learn_agent_id]
+            loss = agent.learn(experiences, gamma)
+            losses.append(loss)
 
-         # Minimize the loss
-        for agent_id, agent in enumerate(self.maddpg_agents):
+        for learn_agent_id in range(self.num_agents):
+            #compute the gradients to minimize the loss
+            agent = self.maddpg_agents[learn_agent_id]
+
             agent.critic_optimizer.zero_grad()
             agent.actor_optimizer.zero_grad()
 
-        for agent_id, agent in enumerate(self.maddpg_agents):
-            losses[agent_id][0].backward(retain_graph=True) #critic loss
-            losses[agent_id][1].backward(retain_graph=True) #actor loss
+            losses[learn_agent_id][0].backward(retain_graph=True) #critic loss
+            losses[learn_agent_id][1].backward(retain_graph=True) #actor loss
 
-        for agent_id, agent in enumerate(self.maddpg_agents):
+        for learn_agent_id in range(self.num_agents):
+            # update the network parameters to minimize the loss
+            agent = self.maddpg_agents[learn_agent_id]
+
             agent.critic_optimizer.step()
             agent.actor_optimizer.step()
+
             # ----------------------- update target networks ----------------------- #
             agent.soft_update(agent.critic_local, agent.critic_target, TAU)
             agent.soft_update(agent.actor_local, agent.actor_target, TAU)     
