@@ -200,15 +200,34 @@ class MADDPG(object):
         for agent in self.maddpg_agents:
             with torch.no_grad():
                 full_next_actions.append(agent.actor_target.forward(full_next_states))
-                full_curr_actions.append(agent.)
+                full_curr_actions.append(agent.actor_local.forward(full_states))
         full_next_actions = torch.cat(full_next_actions, dim=1)
+        full_curr_actions = torch.cat(full_curr_actions, dim=1)
         
-        for agent_id, agent in enumerate(self.maddpg_agents):            
+        losses = []
+        for agent_id, agent in enumerate(self.maddpg_agents):
             agent_reward = full_rewards[agent_id]
             agent_done = full_dones[agent_id]
             
-            experiences = (full_states, full_actions, agent_reward, full_next_states, agent_done, full_next_actions)
-            agent.learn(experiences, gamma)
+            experiences = (full_states, full_actions, agent_reward, full_next_states, full_curr_actions, full_next_actions, agent_done)
+            losses.append(agent.learn(experiences, gamma))
+
+
+         # Minimize the loss
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            agent.critic_optimizer.zero_grad()
+            agent.actor_optimizer.zero_grad()
+
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            losses[agent_id][0].backward(retain_graph=True) #critic loss
+            losses[agent_id][1].backward(retain_graph=True) #actor loss
+
+        for agent_id, agent in enumerate(self.maddpg_agents):
+            agent.critic_optimizer.step()
+            agent.actor_optimizer.step()
+            # ----------------------- update target networks ----------------------- #
+            agent.soft_update(agent.critic_local, agent.critic_target, TAU)
+            agent.soft_update(agent.actor_local, agent.actor_target, TAU)     
 
             
     def act(self, full_states):
@@ -403,7 +422,7 @@ class DDPG(object):
 
 
     def learn(self, experiences, gamma):
-        #for double ddpg
+        #for fully double ddpg
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
         where:
@@ -415,35 +434,23 @@ class DDPG(object):
             experiences (Tuple[torch.Tensor]): tuple of (s, a, r, s', done) tuples 
             gamma (float): discount factor
         """
-        states, actions, rewards, next_states, dones, actions_next = experiences
+        states, actions, rewards, next_states, actions_pred, actions_next, dones = experiences
 
         # ---------------------------- update critic ---------------------------- #
         # Get predicted next-state actions and Q values from target models
-        ###actions_next = self.actor_target(next_states)
         Q_targets_next = self.critic_target(next_states, actions_next)
         # Compute Q targets for current states (y_i)
         Q_targets = rewards + (gamma * Q_targets_next * (1 - dones))
         # Compute critic loss
         Q_expected = self.critic_local(states, actions)
         critic_loss = F.mse_loss(Q_expected, Q_targets)
-        # Minimize the loss
-        self.critic_optimizer.zero_grad()
-        critic_loss.backward()
-        #torch.nn.utils.clip_grad_norm(self.critic_local.parameters(), 1.0) #clip the gradient for the critic network (Udacity hint)
-        self.critic_optimizer.step()
 
         # ---------------------------- update actor ---------------------------- #
         # Compute actor loss
-        actions_pred = self.actor_local(states)
         actor_loss = -self.critic_local(states, actions_pred).mean()
-        # Minimize the loss
-        self.actor_optimizer.zero_grad()
-        actor_loss.backward()
-        self.actor_optimizer.step()
 
-        # ----------------------- update target networks ----------------------- #
-        self.soft_update(self.critic_local, self.critic_target, TAU)
-        self.soft_update(self.actor_local, self.actor_target, TAU)                     
+        return (critic_loss, actor_loss)
+                
 
         
     def soft_update(self, local_model, target_model, tau):
