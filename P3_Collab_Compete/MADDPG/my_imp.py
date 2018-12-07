@@ -73,19 +73,19 @@ class Critic(nn.Module):
 
 class MADDPG(object):
     '''The main class that defines and trains all the agents'''
-    def __init__(self, state_size, action_size, num_agents):
+    def __init__(self, state_size, action_size, num_agents, episodes_before_training):
         self.state_size = state_size
         self.action_size = action_size
         self.num_agents = num_agents
         self.memory = ReplayBuffer(BUFFER_SIZE, BATCH_SIZE) # Replay memory
-        self.maddpg_agents = [DDPG(state_size, action_size), DDPG(state_size, action_size)] #create agents
-        
+        self.maddpg_agents = [DDPG(state_size, action_size, episodes_before_training), DDPG(state_size, action_size, episodes_before_training)] #create agents
+        self.episodes_before_training = episodes_before_training
         
     def reset(self):
         for agent in self.maddpg_agents:
             agent.reset()
 
-    def step(self, full_states, full_actions, full_rewards, full_next_states, full_dones):
+    def step(self, i_episode, full_states, full_actions, full_rewards, full_next_states, full_dones):
         #for stepping maddpg
         """Save experience in replay memory, and use random sample from buffer to learn."""
         # index 0 is for agent 0 and index 1 is for agent 1
@@ -99,8 +99,8 @@ class MADDPG(object):
         self.memory.add(full_states, full_actions, full_rewards, full_next_states, full_dones)
         
         # Learn, if enough samples are available in memory
-        if len(self.memory) > BATCH_SIZE:
-            for agent_id in range(self.num_agents):
+        if len(self.memory) > BATCH_SIZE and i_episode > self.episodes_before_training:
+            for agent_no in range(self.num_agents):
                 samples = self.memory.sample()
                 self.learn(samples, agent_no, GAMMA)
             self.soft_update_all()
@@ -135,7 +135,7 @@ class MADDPG(object):
         experiences = (full_states, actor_full_actions, full_actions, full_rewards[:,agent_no], \
                         full_dones[:,agent_no], full_next_states, critic_full_next_actions)
         
-        agent.learn(experiences, gamma, retain_graph_value)
+        agent.learn(experiences, gamma)
 
   
     def learn_ddpg(self, gamma):
@@ -188,11 +188,11 @@ class MADDPG(object):
             agent.soft_update(agent.actor_local, agent.actor_target, TAU)     
 
             
-    def act(self, full_states, add_noise=True):
+    def act(self, full_states, i_episode, add_noise=True):
         # all actions between -1 and 1
         actions = []
         for agent_id, agent in enumerate(self.maddpg_agents):
-            action = agent.act(np.reshape(full_states[agent_id,:], newshape=(1,-1)), add_noise)
+            action = agent.act(np.reshape(full_states[agent_id,:], newshape=(1,-1)), i_episode, add_noise)
             action = np.reshape(action, newshape=(1,-1))            
             actions.append(action)
         actions = np.concatenate(actions, axis=0)
@@ -218,7 +218,7 @@ class DDPG(object):
     Will use two separate actor networks (one for each agent using each agent's observations only and output that agent's action).
     The critic for each agents gets to see the actions and observations of all agents. """
     
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, action_size, episodes_before_training):
         """Initialize an Agent object.
         
         Params
@@ -228,6 +228,7 @@ class DDPG(object):
         """
         self.state_size = state_size
         self.action_size = action_size
+        self.episodes_before_training = episodes_before_training
         
 
         # Actor Network (w/ Target Network)
@@ -249,18 +250,21 @@ class DDPG(object):
         self.hard_update(self.critic_target, self.critic_local)
 
 
-    def act(self, states, add_noise=True):
+    def act(self, states, i_episode, add_noise=True):
         """Returns actions for given state as per current policy."""
-        #states = torch.from_numpy(states).float().to(device)
-        self.actor_local.eval()
-        with torch.no_grad():
-            actions = self.actor_local(states).cpu().data.numpy()
-        self.actor_local.train()
+        if i_episode > self.episodes_before_training:
+            states = torch.from_numpy(states).float().to(device)
+            self.actor_local.eval()
+            with torch.no_grad():
+                actions = self.actor_local(states).cpu().data.numpy()
+            self.actor_local.train()
+        else:
+            actions = 2*np.random.rand(1,self.action_size) - 1
         
         #add noise according to epsilon probability
         if add_noise and (np.random.random() < self.eps):
-            #actions += self.noise.sample()
-            actions = 2*np.random.rand(1,self.action_size) - 1
+            actions += self.noise.sample()
+            #actions = 2*np.random.rand(1,self.action_size) - 1
             
             #update the exploration parameter
             self.eps -= EPS_DECAY
@@ -273,7 +277,7 @@ class DDPG(object):
     def reset(self):
         self.noise.reset()
 
-    def learn(self, experiences, gamma, retain_graph_value):
+    def learn(self, experiences, gamma):
         #for MADDPG
         """Update policy and value parameters using given batch of experience tuples.
         Q_targets = r + γ * critic_target(next_state, actor_target(next_state))
@@ -370,7 +374,7 @@ class DDPG(object):
 class OUNoise(object):
     """Ornstein-Uhlenbeck process."""
 
-    def __init__(self, size, mu=0., theta=0.15, sigma=0.3):
+    def __init__(self, size, mu=0., theta=0.15, sigma=0.2):
         """Initialize parameters and noise process."""
         self.mu = mu * np.ones(size)
         self.theta = theta
