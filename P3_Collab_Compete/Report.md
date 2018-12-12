@@ -16,11 +16,15 @@ The task is episodic, and in order to solve the environment, the agents must get
 
 The environment is considered solved, when the average (over 100 episodes) of those scores is at least +0.5.
 
+## MADDPG
+
 This environment is quite interesting compared to single agent environments. It requires the training of two separate agents, and the agents need to collaborate under certain situations (like don't let the ball hit the ground) and compete under other situations (like gather as many points as possible). Just doing a simple extension of single agent RL by independently training the two agents does not work very well because the agents are independently updating their policies as learning progresses, the environment appears non-stationary from the viewpoint of any one agent. While we can have non-stationary Markov processes, the convergence guarantees offered by many RL algorithms such as Q-learning requires stationary environments. While there are many different RL algorithms for multi agent settings, for this project I chose to use the Multi Agent Deep Deterministic Policy Gradient (MADDPG) algorithm [1].
 
 The primary motivation behind MADDPG is that if we know the actions taken by all agents, the environment is stationary even as the policies change since P(s'|s,a<sub>1</sub>,a<sub>2</sub>,&pi;<sub>1</sub>,&pi;<sub>2</sub>) = P(s'|s,a<sub>1</sub>,a<sub>2</sub>) = P(s'|s,a<sub>1</sub>,a<sub>2</sub>,&pi;'<sub>1</sub>,&pi;'<sub>2</sub>) for any &pi;<sub>i</sub> &ne; &pi;'<sub>i</sub>. This is not the case if we do not explicitly condition on the actions of other agents, as done by most traditional RL algorithms [1].
 
-In MADDPG, each agent's critic is trained using the observations and actions from all the agents, whereas each agent's actor is trained using just its own observations. This allows the agents to be effectively trained without requiring other agents' observations during inference (because the actor is only dependent on its own observations). Please refer to my GitHub code and [1] below on the update equations.
+In MADDPG, each agent's critic is trained using the observations and actions from all the agents, whereas each agent's actor is trained using just its own observations. This allows the agents to be effectively trained without requiring other agents' observations during inference (because the actor is only dependent on its own observations). Here is the gist of the MADDPG algorithm [1]:
+
+![MADDPG Algorithm][image3]
 
 For each agent's actor, I used a two-layer neural network with 24 units in the input layer, 256 in the first hidden layer, 128 units in the second hidden layer, and 2 units in the output layer. For each agent's critic, I used a two-layer neural network with 48 units in the input layer, 256 units in the first hidden layer (and the actions are concatenated with the output of the input layer), 128 units in the second hidden layer, and 1 unit in the output layer.
 
@@ -28,9 +32,7 @@ The network was trained using Adam optimizer with elu non-linearity for faster t
 
 In terms of hyperparameters used, the actor network's learning rate was 1e-4 and the critic's was 3e-4. This allowed the critic to learn a little faster than the actor since the actor network's learning relies on the critic network. For the target networks, a soft update factor of &tau;=2e-3 was used. A batch size of 256 was used. Additionally, a discount factor of 0.99 was used force the agents to be "cognizant" of their actions' long term consequences. Given the behavior policy used is stochastic, due to the additive OU noise, it helped the network generalize well such that regularization was not needed.
 
-
-
-For implementation details, please refer to my GitHub code <ADD HYPERLINK>.
+For implementation details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb).
 
 
 
