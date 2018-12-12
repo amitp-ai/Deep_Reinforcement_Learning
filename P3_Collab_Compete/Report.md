@@ -35,6 +35,7 @@ In terms of hyperparameters used, the actor network's learning rate was 1e-4 and
 For implementation details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb).
 
 The agent's learning performance is as shown below.
+
 ![MADDPG Algorithm][image2]
 
 
