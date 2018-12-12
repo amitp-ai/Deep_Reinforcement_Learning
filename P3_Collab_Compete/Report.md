@@ -26,13 +26,15 @@ In MADDPG, each agent's critic is trained using the observations and actions fro
 
 ![MADDPG Algorithm][image3]
 
+## Implementation Details
+
 For each agent's actor, I used a two-layer neural network with 24 units in the input layer, 256 in the first hidden layer, 128 units in the second hidden layer, and 2 units in the output layer. For each agent's critic, I used a two-layer neural network with 48 units in the input layer, 256 units in the first hidden layer (and the actions are concatenated with the output of the input layer), 128 units in the second hidden layer, and 1 unit in the output layer.
 
 The network was trained using Adam optimizer with elu non-linearity for faster training. I performed a few things to help speed up the learning process: 1) for the first 300 episodes, no learning occurred. The agents were just doing random exploration using the Ornstein-Uhlenbeck (OU) noise process. 2) There after learning started. But for each step in the environment, agent's performed three iterations of learning. Furthermore, the additive noise introduced by the OU process (for better exploration) was gradually decayed down to 50% of the noise amount. 
 
 In terms of hyperparameters used, the actor network's learning rate was 1e-4 and the critic's was 3e-4. This allowed the critic to learn a little faster than the actor since the actor network's learning relies on the critic network. For the target networks, a soft update factor of &tau;=2e-3 was used. A batch size of 256 was used. Additionally, a discount factor of 0.99 was used force the agents to be "cognizant" of their actions' long term consequences. Given the behavior policy used is stochastic, due to the additive OU noise, it helped the network generalize well such that regularization was not needed.
 
-For implementation details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb).
+For further details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Tennis_Udacity_Workspace.ipynb).
 
 The agent's learning performance is as shown below.
 
