@@ -39,5 +39,6 @@ The agent's learning performance is as shown below.
 ![MADDPG Algorithm][image2]
 
 
-References:
-[1]: MADDPG paper
+## References:
+
+[1]: MADDPG paper: 
