@@ -38,8 +38,8 @@ The agent's learning performance is as shown below.
 
 ![MADDPG Algorithm][image3]
 
-For further details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Tennis_Udacity_Workspace.ipynb).
+For further details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Tennis_Udacity_Workspace.ipynb)
 
 ## References:
 
-[1]: [MADDPG paper.](https://arxiv.org/pdf/1706.02275.pdf).
+[1]: [MADDPG paper.](https://arxiv.org/pdf/1706.02275.pdf)
