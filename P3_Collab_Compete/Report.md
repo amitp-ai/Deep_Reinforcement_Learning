@@ -2,9 +2,9 @@
 [image2]: https://user-images.githubusercontent.com/23042512/48657452-cc597f00-e9e5-11e8-8776-37a144f24702.png "Trained Agent Scores"
 [image3]: https://user-images.githubusercontent.com/23042512/48657452-cc597f00-e9e5-11e8-8776-37a144f24702.png "MADDPG Algorithm"
 
+![Trained Agent][image1]
 
 ## Introduction
-![Trained Agent][image1]
 
 This report discusses my implementation for the third project in Udacity's Deep Reinforcement Learning Nanodegree. In particular, the objective of this project is to solve the Tennis environment.
 
@@ -34,12 +34,8 @@ In terms of hyperparameters used, the actor network's learning rate was 1e-4 and
 
 For implementation details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P2_Continuous_Actions/Continuous_Control_UdacityWorkspace.ipynb).
 
-
-
-PUT A PICTURE OF THE SCORES, AGENT PERFORMANCE, AS WELL AS THE AGORITHM USED FROM MADDPG PAPER.\
-
-
-
+The agent's learning performance is as shown below.
+![MADDPG Algorithm][image2]
 
 
 References:
