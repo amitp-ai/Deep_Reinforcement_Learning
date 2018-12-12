@@ -1,6 +1,6 @@
 [image1]: https://user-images.githubusercontent.com/23042512/48657451-cc597f00-e9e5-11e8-8332-bf97ee7da5f8.gif "Trained Agent Perf"
-[image2]: https://user-images.githubusercontent.com/23042512/48657452-cc597f00-e9e5-11e8-8776-37a144f24702.png "Trained Agent Scores"
-[image3]: https://user-images.githubusercontent.com/23042512/49905192-b17dfd00-fe21-11e8-8645-682912bc0dbe.png "MADDPG Algorithm"
+[image2]: https://user-images.githubusercontent.com/23042512/49905192-b17dfd00-fe21-11e8-8645-682912bc0dbe.png "MADDPG Algorithm"
+[image3]: https://user-images.githubusercontent.com/23042512/49905411-6dd7c300-fe22-11e8-84dc-bf8cee04ec37.png "Trained Agent Scores"
 
 ![Trained Agent][image1]
 
@@ -24,7 +24,7 @@ The primary motivation behind MADDPG is that if we know the actions taken by all
 
 In MADDPG, each agent's critic is trained using the observations and actions from all the agents, whereas each agent's actor is trained using just its own observations. This allows the agents to be effectively trained without requiring other agents' observations during inference (because the actor is only dependent on its own observations). Here is the gist of the MADDPG algorithm [1]:
 
-![MADDPG Algorithm][image3]
+![MADDPG Algorithm][image2]
 
 ## Implementation Details
 
@@ -38,7 +38,7 @@ For further details, [please refer to my github code for details.](https://githu
 
 The agent's learning performance is as shown below.
 
-![MADDPG Algorithm][image2]
+![MADDPG Algorithm][image3]
 
 
 ## References:
