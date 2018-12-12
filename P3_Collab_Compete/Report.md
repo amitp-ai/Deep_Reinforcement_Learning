@@ -34,12 +34,11 @@ The network was trained using Adam optimizer with elu non-linearity for faster t
 
 In terms of hyperparameters used, the actor network's learning rate was 1e-4 and the critic's was 3e-4. This allowed the critic to learn a little faster than the actor since the actor network's learning relies on the critic network. For the target networks, a soft update factor of &tau;=2e-3 was used. A batch size of 256 was used. Additionally, a discount factor of 0.99 was used force the agents to be "cognizant" of their actions' long term consequences. Given the behavior policy used is stochastic, due to the additive OU noise, it helped the network generalize well such that regularization was not needed.
 
-For further details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Tennis_Udacity_Workspace.ipynb).
-
 The agent's learning performance is as shown below.
 
 ![MADDPG Algorithm][image3]
 
+For further details, [please refer to my github code for details.](https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Tennis_Udacity_Workspace.ipynb).
 
 ## References:
 
