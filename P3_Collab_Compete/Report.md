@@ -42,4 +42,4 @@ For further details, [please refer to my github code for details.](https://githu
 
 ## References:
 
-[1]: MADDPG paper: 
+[1]: [MADDPG paper] (https://arxiv.org/pdf/1706.02275.pdf)
