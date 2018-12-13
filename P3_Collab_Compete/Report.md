@@ -1,4 +1,4 @@
-[image1]: https://user-images.githubusercontent.com/23042512/48657451-cc597f00-e9e5-11e8-8332-bf97ee7da5f8.gif "Trained Agent Perf"
+[image1]: https://user-images.githubusercontent.com/23042512/49918461-1b18fe00-fe58-11e8-8f99-f3d15ff13c5d.gif "Trained Agent Perf"
 [image2]: https://user-images.githubusercontent.com/23042512/49905192-b17dfd00-fe21-11e8-8645-682912bc0dbe.png "MADDPG Algorithm"
 [image3]: https://user-images.githubusercontent.com/23042512/49905411-6dd7c300-fe22-11e8-84dc-bf8cee04ec37.png "Trained Agent Scores"
 
