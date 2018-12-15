@@ -6,6 +6,9 @@
 
 # Project 3: Collaboration and Competition
 
+# Report: https://medium.com/@amitpatel.gt/maddpg-91caa221d75e
+
+
 ### Introduction
 
 For this project, you will work with the [Tennis](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md#tennis) environment.
