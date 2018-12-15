@@ -1,4 +1,4 @@
-# Repository for the Udacity Deep Reinforcement Learning Nanodegree Program.
+# Udacity Deep Reinforcement Learning Nanodegree.
 
 **Project 1 Report: https://medium.com/@amitpatel.gt/double-dqn-48562b5f31c1**
 
