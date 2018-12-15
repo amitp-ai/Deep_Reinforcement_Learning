@@ -6,7 +6,8 @@
 
 # Project 3: Collaboration and Competition
 
-# Report: https://medium.com/@amitpatel.gt/maddpg-91caa221d75e
+
+Report: https://medium.com/@amitpatel.gt/maddpg-91caa221d75e
 
 
 ### Introduction
