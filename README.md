@@ -6,4 +6,4 @@ Project 1 is about training an agent using Double DQN algorithm to navigate the 
 
 **Project 2 Report: https://medium.com/@amitpatel.gt/policy-gradients-1edbbbc8de6b**
 
-**Project 3 Report: https://github.com/gtg162y/DRLND/blob/master/P3_Collab_Compete/Report.md**
+**Project 3 Report:  https://medium.com/@amitpatel.gt/maddpg-91caa221d75e**
