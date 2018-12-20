@@ -60,7 +60,7 @@ class OXOState(object):
     def GetMoves(self):
         """ Get all possible moves from this state.
         """
-        return [i for i in range(9) if self.board[i] == 0]
+        return [i for i in range(9) if self.board[i] == 0] #empty spots are initialized to 0 (which is printed as '.' by design, see __repr__ function)
     
     def GetResult(self, playerjm):
         """ Get the game result from the viewpoint of playerjm. 
@@ -69,10 +69,12 @@ class OXOState(object):
             if self.board[x] == self.board[y] == self.board[z]:
                 if self.board[x] == playerjm:
                     return 1.0
-                else:
+                elif self.board[x] == 3-playerjm:
                     return 0.0
+                else:
+                    return None #game undecided
         if self.GetMoves() == []: return 0.5 # draw
-        assert False # Should not be possible to get here
+        return None #if it comes here then the game is still undecided
 
     def __repr__(self):
         s= ""
@@ -144,35 +146,46 @@ def UCT(rootstate, itermax, verbose = False):
         Return the best move from the rootstate.
         Assumes 2 alternating players (player 1 starts), with game results in the range [0.0, 1.0]."""
 
+    if rootstate.GetResult(1) is not None: #doesn't matter for which player 1 or 2
+        raise ValueError("Game Has Ended!")
+
+
     rootnode = Node(state = rootstate)
 
     for i in range(itermax):
-        node = rootnode #node is just a pointer to rootnode. So as node is changed, rootnode is changed too.
-        state = rootstate.Clone()
-
-        #print('This is node/root node {}/{}'.format(node, rootnode))
-        #print('Root Node Untried Moves: {}'.format(len(rootnode.untriedMoves)))
-
+        node = rootnode #node is just a pointer to rootnode. So as node is changed, rootnode is changed too. (before node is assigned to a different object)
+        state = rootstate.Clone() #state is updated in place when executing the state.domove() method below
+        
+        #print('at beginning', node, '\t', rootnode)
         # Select
-        while node.untriedMoves == [] and node.childNodes != []: # node is fully expanded and non-terminal
-            node = node.UCTSelectChild()
-            state.DoMove(node.move)
+        while node.untriedMoves == [] and node.childNodes != [] and state.GetResult(node.playerJustMoved) is None: # node is fully expanded and non-terminal
+            node = node.UCTSelectChild() #updates rootnode (via node the first time, then the next while iteration root is not updated as node is no longer pointing to it)
+            state.DoMove(node.move) #this updates the variable state in place when executing the state.domove() method
+        #print('after select', node, '\t', rootnode)
 
         # Expand
-        if node.untriedMoves != []: # if we can expand (i.e. state/node is non-terminal)
+        if node.untriedMoves != [] and node.childNodes == [] and state.GetResult(node.playerJustMoved) is None: # if we can expand (i.e. state/node is non-terminal)
             m = random.choice(node.untriedMoves) 
             state.DoMove(m) #this updates the variable state in place when executing the move
-            node = node.AddChild(m,state) # add child and descend tree
+            node = node.AddChild(m,state) # add child and descend tree. node.addchild() updates node in place. Thus changing rootnode
+            #node.addchild() also returns a different node which is assigned to variable 'node.' There after node is now not poining to rootnode. They are different.
+        #print('after expand', node, '\t', rootnode)
 
         # Rollout - this can often be made orders of magnitude quicker using a state.GetRandomMove() function
-        # Rollout starts from the expanded node (as state is updated after DoMove())
-        while state.GetMoves() != []: # while state is non-terminal
+        # Rollout starts from the selected/expanded node (as state is updated after state.DoMove() in select and expand sections)
+        while state.GetMoves() != [] and state.GetResult(node.playerJustMoved) is None: # while state is non-terminal
             state.DoMove(random.choice(state.GetMoves())) #this updates the variable state in place when executing the move
+            print(state)
+            print('AAA ', state.GetMoves())
+        #rollout does not change node or rootnode
+        #print('after rollout', node, '\t', rootnode)
 
         # Backpropagate
         while node != None: # backpropagate from the expanded node and work back to the root node
             node.Update(state.GetResult(node.playerJustMoved)) # state is terminal. Update node with result from POV of node.playerJustMoved
             node = node.parentNode
+        #print('after backprop', node, '\t', rootnode)
+        #after backpropagation, node points to None
 
     # Output some information about the tree - can be omitted
     if (verbose): print(rootnode.TreeToString(0))
@@ -192,11 +205,11 @@ def UCTPlayGame():
     while (state.GetMoves() != []):
         print(str(state))
         if state.playerJustMoved == 1:
-            print('Next Player Player is 2')
-            m = UCT(rootstate = state, itermax = 1000, verbose = False) # play with values for itermax and verbose = True
+            print('Next Player is 2')
+            m = UCT(rootstate = state, itermax = 20, verbose = False) # play with values for itermax and verbose = True
         else:
-            print('Next Player Player is 1')
-            m = UCT(rootstate = state, itermax = 100, verbose = False)
+            print('Next Player is 1')
+            m = UCT(rootstate = state, itermax = 10, verbose = False)
         print("Best Move: " + str(m) + "\n")
         state.DoMove(m)
     if state.GetResult(state.playerJustMoved) == 1.0:
@@ -211,3 +224,4 @@ if __name__ == "__main__":
     """ Play a single game to the end using UCT for both players. 
     """
     UCTPlayGame()
+
