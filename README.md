@@ -1,4 +1,4 @@
-# Udacity's Deep Reinforcement Learning Nanodegree
+# Deep Reinforcement Learning (Udacity)
 
 **Project 1 Report (Value Based RL Methods Including DQN and Double DQN) <br />
 https://medium.com/@amitpatel.gt/double-dqn-48562b5f31c1**
