@@ -1,4 +1,4 @@
-# Deep Reinforcement Learning
+# Deep Reinforcement Learning (Fall 2018)
 
 **Project 1: Value Based RL Methods Including Deep Q-Network (DQN) and Double Deep Q-Network (DDQN) <br />
 https://medium.com/@amitpatel.gt/double-dqn-48562b5f31c1**
