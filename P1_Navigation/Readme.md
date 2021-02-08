@@ -1,4 +1,4 @@
-**Project Report: https://medium.com/@amitpatel.gt/double-dqn-48562b5f31c1**
+**Project Report: https://medium.com/@amitp-ai/double-dqn-48562b5f31c1**
 
 
 [//]: # (Image References)
