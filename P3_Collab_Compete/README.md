@@ -3,7 +3,7 @@
 [image1]: https://user-images.githubusercontent.com/10624937/42135623-e770e354-7d12-11e8-998d-29fc74429ca2.gif "Trained Agent"
 [image2]: https://user-images.githubusercontent.com/10624937/42135622-e55fb586-7d12-11e8-8a54-3c31da15a90a.gif "Soccer"
 
-Project Report: https://medium.com/@amitpatel.gt/maddpg-91caa221d75e
+Project Report: https://medium.com/@amitp-ai/maddpg-91caa221d75e
 
 
 # Project 3: Collaboration and Competition
